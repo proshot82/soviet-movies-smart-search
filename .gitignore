@@ -1,0 +1,18 @@
+# Секреты: ключ OpenAI берётся из переменной OPENAI_API_KEY или из этих файлов
+.openai_key
+openai_key.txt
+.env
+
+# Логи
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Временные файлы Office и Windows
+~$*
+Thumbs.db
+desktop.ini
