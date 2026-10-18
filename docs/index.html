@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Кинокаталог Госфильмофонда</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23cc2018'/%3E%3Crect x='6' y='5' width='4' height='22' fill='%23ece2cd'/%3E%3Crect x='14' y='5' width='4' height='22' fill='%23ece2cd'/%3E%3Crect x='22' y='5' width='4' height='22' fill='%23ece2cd'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ece2cd;
+  --paper-2:#e3d7bc;
+  --field:#f7f1e1;
+  --ink:#1a1510;
+  --ink-soft:#3a3026;
+  --ink-dim:#7a6c55;
+  --red:#cc2018;
+  --red-deep:#a3160f;
+  --border:#c3b491;
+  --border-dark:#1a1510;
+  --fd:'Oswald',-apple-system,sans-serif;
+  --fb:'PT Serif',Georgia,'Times New Roman',serif;
+  --fm:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--fb);
+  font-size:17px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:880px;margin:0 auto;padding:34px 26px 90px;}
+
+/* ─── Шапка ─── */
+.masthead{margin-bottom:0;}
+.mh-top{display:flex;align-items:center;gap:18px;}
+.mark{
+  width:58px;height:58px;flex:0 0 auto;background:var(--red);position:relative;
+}
+.mark::before{
+  content:"";position:absolute;top:8px;bottom:8px;left:11px;width:8px;
+  background:var(--paper);box-shadow:14px 0 0 var(--paper),28px 0 0 var(--paper);
+}
+.logo{
+  margin:0;font-family:var(--fd);font-weight:700;text-transform:uppercase;
+  line-height:0.9;letter-spacing:0.005em;
+}
+.logo-1,.logo-2{display:block;font-size:2.6rem;}
+.logo-1{color:var(--ink);}
+.logo-2{color:var(--red);}
+.mh-rule{height:5px;background:var(--ink);margin:14px 0 9px;}
+.mh-sub{
+  font-family:var(--fd);font-weight:500;text-transform:uppercase;
+  letter-spacing:0.16em;font-size:0.74rem;color:var(--ink-soft);
+}
+.mh-sub .hl{color:var(--red);font-weight:600;}
+
+/* ─── Плёночная лента ─── */
+.filmstrip{
+  height:30px;background:var(--ink);position:relative;margin:18px 0 26px;
+}
+.filmstrip::before,.filmstrip::after{
+  content:"";position:absolute;left:0;right:0;height:7px;
+  background-image:repeating-linear-gradient(to right,var(--paper) 0 10px,transparent 10px 20px);
+}
+.filmstrip::before{top:5px;}
+.filmstrip::after{bottom:5px;}
+
+/* ─── Примечание про телефильмы ─── */
+.tvnote{
+  border-left:6px solid var(--red);background:var(--paper-2);
+  padding:12px 16px;margin:0 0 30px;font-size:0.95rem;color:var(--ink-soft);
+}
+.tvnote-h{
+  font-family:var(--fd);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.05em;color:var(--red);font-size:0.9rem;margin-right:6px;
+}
+
+/* ─── Блок поиска ─── */
+.ask{display:flex;gap:13px;align-items:stretch;margin-bottom:6px;}
+.ask-bar{width:8px;flex:0 0 auto;background:var(--red);}
+.ask-h{margin:0;font-family:var(--fd);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.01em;font-size:1.55rem;line-height:1.05;}
+.ask-1{color:var(--ink);}
+.ask-2{color:var(--red);}
+.ask-note{margin:0 0 16px 21px;font-style:italic;color:var(--ink-dim);font-size:0.98rem;}
+.search-row{display:flex;gap:12px;margin-bottom:13px;}
+.q-input{
+  flex:1;background:var(--field);border:2px solid var(--ink);color:var(--ink);
+  font-family:var(--fb);font-size:1.05rem;padding:13px 16px;outline:none;border-radius:0;
+}
+.q-input::placeholder{color:#a99c82;font-style:italic;}
+.q-input:focus{border-color:var(--red);}
+.find-btn{
+  background:var(--red);color:var(--field);border:none;cursor:pointer;
+  font-family:var(--fd);font-weight:600;text-transform:uppercase;letter-spacing:0.08em;
+  font-size:1.02rem;padding:0 30px;border-radius:0;transition:background .12s;
+}
+.find-btn:hover{background:var(--red-deep);}
+.find-btn:disabled{background:var(--ink-dim);cursor:default;}
+.examples{display:flex;flex-wrap:wrap;align-items:center;gap:14px;font-size:0.92rem;}
+.ex-label{font-family:var(--fd);font-weight:500;text-transform:uppercase;
+  letter-spacing:0.1em;font-size:0.74rem;color:var(--ink-dim);}
+.ex{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--border);
+  text-underline-offset:3px;cursor:pointer;font-style:italic;}
+.ex:hover{color:var(--red);text-decoration-color:var(--red);}
+
+/* ─── Боксы-подсказки ─── */
+.box{border:1.5px solid var(--border-dark);background:transparent;padding:20px 22px;margin:28px 0;}
+.box-h{margin:0 0 12px;font-family:var(--fd);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.07em;font-size:0.96rem;color:var(--ink);}
+.box-h .bullet{color:var(--red);margin-right:6px;font-size:0.7em;vertical-align:middle;}
+.box-intro{margin:0 0 16px;font-size:0.97rem;color:var(--ink-soft);}
+.box-foot{margin:16px 0 0;padding-top:13px;border-top:1px solid var(--border);
+  font-size:0.9rem;font-style:italic;color:var(--ink-dim);}
+.cols{display:flex;gap:30px;}
+.col{flex:1;min-width:0;}
+.badge{display:inline-block;font-family:var(--fd);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.08em;font-size:0.72rem;padding:3px 10px;margin-bottom:10px;color:var(--field);}
+.badge-yes{background:var(--red);}
+.badge-no{background:var(--ink);}
+.tips{list-style:none;margin:0;padding:0;}
+.tips li{position:relative;padding-left:20px;margin-bottom:9px;font-size:0.92rem;line-height:1.4;color:var(--ink-soft);}
+.tips li::before{position:absolute;left:0;top:-1px;font-family:var(--fd);font-weight:700;font-size:1.05em;}
+.tips-yes li::before{content:"+";color:var(--red);}
+.tips-no li::before{content:"\2212";color:var(--ink);}
+.sub-r{margin:16px 0 5px;font-family:var(--fd);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.07em;font-size:0.82rem;color:var(--red);}
+.box-p{margin:0;font-size:0.93rem;color:var(--ink-soft);}
+
+/* ─── Фильтры ─── */
+.filters{margin:26px 0;}
+.filter-selects{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+.sel{
+  appearance:none;-webkit-appearance:none;
+  background-color:var(--field);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M0 0h10L5 7z' fill='%23cc2018'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;
+  border:1.5px solid var(--ink);color:var(--ink);font-family:var(--fb);font-size:0.95rem;
+  padding:9px 30px 9px 13px;border-radius:0;outline:none;cursor:pointer;
+}
+.sel:focus{border-color:var(--red);}
+
+/* ─── Статус / прогресс / уведомление ─── */
+.status{font-family:var(--fm);font-size:0.82rem;color:var(--ink-dim);margin:18px 0 6px;min-height:1em;}
+.status.busy{color:var(--ink);}
+.status.err{color:var(--red);}
+.notice{font-size:0.9rem;color:var(--ink);background:var(--paper-2);border-left:3px solid var(--red);
+  padding:8px 12px;margin:0 0 12px;}
+.progress{height:4px;background:var(--paper-2);position:relative;overflow:hidden;margin:0 0 8px;display:none;}
+.progress.on{display:block;}
+.progress::after{content:"";position:absolute;top:0;left:-40%;width:40%;height:100%;background:var(--red);
+  animation:slide 1.4s ease-in-out infinite;}
+@keyframes slide{0%{left:-40%;}100%{left:100%;}}
+.stages{font-family:var(--fd);font-weight:500;text-transform:uppercase;letter-spacing:0.06em;font-size:0.72rem;
+  color:var(--ink-dim);margin:0 0 14px;display:none;}
+.stages.on{display:block;}
+.stages b{color:var(--red);font-weight:600;}
+.empty{padding:16px 0;font-style:italic;color:var(--ink-dim);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+
+/* ─── Результаты ─── */
+#results{margin-top:10px;}
+.result{padding:20px 0;border-bottom:1px solid var(--border);}
+.result:first-child{border-top:1px solid var(--border);}
+.result-header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;}
+.result-title{font-family:var(--fd);font-weight:600;font-size:1.12rem;color:var(--ink);
+  line-height:1.3;display:flex;align-items:baseline;flex-wrap:wrap;gap:4px;}
+.rank-badge{display:inline-flex;align-items:center;justify-content:center;
+  width:25px;height:25px;flex:0 0 auto;background:var(--red);color:var(--field);
+  border-radius:50%;font-family:var(--fd);font-weight:600;font-size:0.8rem;
+  margin-right:9px;transform:translateY(-1px);}
+.conf{display:inline-block;font-family:var(--fd);font-weight:600;text-transform:uppercase;
+  letter-spacing:0.06em;font-size:0.66rem;padding:2px 8px;margin-left:9px;
+  transform:translateY(-2px);}
+.conf-high{background:var(--red);color:var(--field);}
+.conf-mid{background:var(--ink);color:var(--field);}
+.conf-low{background:transparent;color:var(--ink-dim);border:1px solid var(--ink-dim);}
+
+.result-meta{font-family:var(--fd);font-weight:400;text-transform:uppercase;letter-spacing:0.05em;
+  font-size:0.75rem;color:var(--ink-dim);margin:7px 0 0 34px;}
+.result-ann{margin:9px 0 0 34px;font-size:0.97rem;color:var(--ink-soft);line-height:1.55;}
+.result-ann.collapsed{max-height:4.7em;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent);
+  mask-image:linear-gradient(to bottom,#000 62%,transparent);}
+.toggle-ann{display:inline-block;margin:6px 0 0 34px;font-family:var(--fd);font-weight:500;
+  text-transform:uppercase;letter-spacing:0.06em;font-size:0.72rem;color:var(--red);cursor:pointer;}
+.toggle-ann:hover{color:var(--red-deep);}
+
+/* ─── Ключ OpenAI ─── */
+.keybox{margin:22px 0 0;}
+.key-h{font-family:var(--fd);font-weight:600;text-transform:uppercase;letter-spacing:0.07em;font-size:0.82rem;color:var(--red);margin:0 0 4px;}
+.key-p{margin:0 0 10px;font-size:0.9rem;color:var(--ink-soft);}
+.key-row{display:flex;gap:10px;}
+.key-input{flex:1;min-width:0;background:var(--field);border:1.5px solid var(--ink);color:var(--ink);
+  font-family:var(--fm);font-size:0.88rem;padding:8px 12px;outline:none;border-radius:0;}
+.key-input:focus{border-color:var(--red);}
+.key-btn{background:var(--ink);color:var(--field);border:none;cursor:pointer;font-family:var(--fd);font-weight:500;
+  text-transform:uppercase;letter-spacing:0.08em;font-size:0.8rem;padding:0 18px;border-radius:0;}
+.key-btn:hover{background:var(--red);}
+.key-btn:disabled{background:var(--ink-dim);cursor:default;}
+.key-msg{margin-top:6px;font-size:0.86rem;color:var(--red);min-height:1em;}
+.key-line{font-size:0.86rem;color:var(--ink-dim);font-style:italic;}
+.key-link{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px;cursor:pointer;}
+.key-link:hover{color:var(--red);text-decoration-color:var(--red);}
+.mono{font-family:var(--fm);font-style:normal;font-size:0.85em;}
+
+/* ─── Нижняя статистика ─── */
+.stats-bar{margin-top:34px;padding-top:14px;border-top:2px solid var(--ink);
+  font-family:var(--fm);font-size:0.78rem;color:var(--ink-dim);text-align:center;letter-spacing:0.02em;}
+
+@media (max-width:620px){
+  .container{padding:24px 16px 70px;}
+  .logo-1,.logo-2{font-size:1.9rem;}
+  .cols{flex-direction:column;gap:22px;}
+  .search-row{flex-direction:column;}
+  .find-btn{padding:13px 0;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="masthead">
+    <div class="mh-top">
+      <div class="mark" aria-hidden="true"></div>
+      <h1 class="logo"><span class="logo-1">Кинокаталог</span><span class="logo-2">Госфильмофонда</span></h1>
+    </div>
+    <div class="mh-rule"></div>
+    <div class="mh-sub">Советское кино · Архив <span class="hl">1918&ndash;1987</span> · Печатный каталог в полном объёме</div>
+  </header>
+
+  <div class="filmstrip" aria-hidden="true"></div>
+
+  <div class="tvnote">
+    <span class="tvnote-h">Телефильмов здесь пока нет.</span>Ни Штирлица, ни Д&rsquo;Артаньяна. Следите за обновлениями.
+  </div>
+
+  <section class="search">
+    <div class="ask">
+      <span class="ask-bar" aria-hidden="true"></span>
+      <h2 class="ask-h"><span class="ask-1">Ищешь фильм?</span> <span class="ask-2">Опиши своими словами.</span></h2>
+    </div>
+    <p class="ask-note">Сюжет, сцена, профессия героя — как запомнилось. Память неточна, поиск делает на это поправку.</p>
+    <div class="search-row">
+      <input type="text" id="q" class="q-input" placeholder="например: лётчики поют в самодеятельном хоре" autocomplete="off" autofocus>
+      <button id="btn" class="find-btn">Найти</button>
+    </div>
+    <div class="examples">
+      <span class="ex-label">Например:</span>
+      <span class="ex" data-q="средневековый живописец странствует по Руси и видит жестокость">живописец на Руси</span>
+      <span class="ex" data-q="охотник убил дочь">охотник убил дочь</span>
+      <span class="ex" data-q="мальчик дружит с лошадью в горах">мальчик и лошадь</span>
+    </div>
+  </section>
+
+  <!-- Ключ OpenAI: хранится только в этом браузере (localStorage), запросы идут напрямую в api.openai.com -->
+  <section class="keybox" id="keybox">
+    <div id="key-unset" hidden>
+      <div class="key-h">Ключ OpenAI</div>
+      <p class="key-p">Без ключа ищется только по словам. С ключом — ещё и по смыслу, а модель перечитывает кандидатов и ставит пометки уверенности (как в локальной версии). Ключ сохраняется только в этом браузере и уходит только в api.openai.com; запрос стоит около 20 тыс. входных токенов <span class="mono" id="rerankModel">gpt-5.5</span>.</p>
+      <div class="key-row">
+        <input type="password" id="key-input" class="key-input" placeholder="sk-…" autocomplete="off" spellcheck="false">
+        <button id="key-save" class="key-btn">Сохранить</button>
+      </div>
+      <div class="key-msg" id="key-msg" aria-live="polite"></div>
+    </div>
+    <div id="key-set" class="key-line" hidden>
+      Ключ OpenAI сохранён в этом браузере <span class="mono" id="key-mask"></span> ·
+      <span class="key-link" id="key-change">заменить</span> · <span class="key-link" id="key-forget">удалить</span>
+    </div>
+  </section>
+
+  <section class="filters">
+    <div class="filter-selects">
+      <select id="f-year" class="sel" title="Десятилетие производства">
+        <option value="">Все десятилетия</option>
+        <option value="1910">1910-е</option>
+        <option value="1920">1920-е</option>
+        <option value="1930">1930-е</option>
+        <option value="1940">1940-е</option>
+        <option value="1950">1950-е</option>
+        <option value="1960">1960-е</option>
+        <option value="1970">1970-е</option>
+        <option value="1980">1980-е</option>
+      </select>
+      <select id="f-studio" class="sel" title="Студия">
+        <option value="">Любая студия</option>
+        <option value="Мосфильм">Мосфильм</option>
+        <option value="Ленфильм">Ленфильм</option>
+        <option value="Горького">им. Горького</option>
+        <option value="Одесская">Одесская</option>
+        <option value="Довженко">им. Довженко</option>
+        <option value="Беларусьфильм">Беларусьфильм</option>
+        <option value="Грузия-фильм">Грузия-фильм</option>
+        <option value="Арменфильм">Арменфильм</option>
+        <option value="Азербайджанфильм">Азербайджанфильм</option>
+        <option value="Узбекфильм">Узбекфильм</option>
+        <option value="Казахфильм">Казахфильм</option>
+        <option value="Туркменфильм">Туркменфильм</option>
+        <option value="Таджикфильм">Таджикфильм</option>
+        <option value="Киргизфильм">Киргизфильм</option>
+        <option value="Молдова-фильм">Молдова-фильм</option>
+        <option value="Таллинфильм">Таллинфильм</option>
+        <option value="Рижская">Рижская</option>
+        <option value="Литовская">Литовская</option>
+        <option value="Свердловская">Свердловская</option>
+      </select>
+      <select id="f-genre" class="sel" title="Жанр">
+        <option value="">Любой жанр</option>
+        <option value="драма">драма</option>
+        <option value="комедия">комедия</option>
+        <option value="мелодрама">мелодрама</option>
+        <option value="детектив">детектив</option>
+        <option value="приключен">приключения</option>
+        <option value="киноповесть">киноповесть</option>
+        <option value="экраниз">экранизация</option>
+        <option value="сказка">сказка</option>
+        <option value="музык">музыкальный</option>
+        <option value="военн">военный</option>
+        <option value="историч">исторический</option>
+        <option value="биограф">биографический</option>
+        <option value="фантаст">фантастика</option>
+        <option value="революцион">историко-революционный</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- Результаты — сразу под полем поиска и фильтрами, чтобы не искать их внизу страницы -->
+  <div id="status" class="status" aria-live="polite"></div>
+  <div id="progress" class="progress" aria-hidden="true"></div>
+  <div id="stages" class="stages"></div>
+  <div id="notice" class="notice" hidden></div>
+  <div id="results"></div>
+
+  <section class="box">
+    <h3 class="box-h"><span class="bullet">&#9679;</span>Как искать: что писать в запросе</h3>
+    <p class="box-intro">Поиск идёт по сюжетным аннотациям печатного каталога — описывай то, что происходит на экране, как пересказал бы сюжет своими словами. Сначала по словам и по смыслу отбираются несколько десятков похожих аннотаций, затем модель перечитывает их и показывает пять самых подходящих с пометкой уверенности: наиболее вероятно / возможно / маловероятно. Обычно это занимает 2–5 секунд. Без ключа OpenAI работает только отбор по словам — показываются десять лучших совпадений без пометок.</p>
+    <div class="cols">
+      <div class="col">
+        <span class="badge badge-yes">Работает</span>
+        <ul class="tips tips-yes">
+          <li>конкретные события и действия: «охотник случайно убивает дочь»</li>
+          <li>профессии и роли героев: «председатель колхоза», «фронтовик», «студентка»</li>
+          <li>место и обстановка: «полярная станция», «коммуналка», «целина»</li>
+          <li>кто и над кем действует: «отец ищет сына», а не просто «поиски»</li>
+          <li>слова из названия, если помнишь хотя бы часть</li>
+        </ul>
+      </div>
+      <div class="col">
+        <span class="badge badge-no">Не работает</span>
+        <ul class="tips tips-no">
+          <li>имена актёров и режиссёров — в аннотациях их нет</li>
+          <li>цитаты и реплики из фильма</li>
+          <li>музыка, цвет плёнки, операторская работа</li>
+          <li>оценки и настроение: «добрый», «атмосферный», «культовый»</li>
+          <li>вводные обороты: «помогите найти фильм, где…» — сразу к делу</li>
+        </ul>
+      </div>
+    </div>
+    <p class="box-foot">Одна точная деталь сильнее трёх размытых. Не уверен в детали — опусти её: память путает роли, реранкер делает на это поправку. Жанр и десятилетие задавай фильтрами под полем поиска, а не словами в запросе.</p>
+  </section>
+
+  <div class="stats-bar" id="statsBar"><span id="statsText">Кинокаталог</span> · аннотированный каталог Госфильмофонда</div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

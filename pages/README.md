@@ -1,0 +1,37 @@
+# Поиск на GitHub Pages
+
+Статическая версия поиска: страница `docs/` работает целиком в браузере, без `serve.bat` и Python.
+Каталог (26 МБ вместо 630 МБ базы) загружается при открытии страницы и кэшируется браузером.
+
+## Как устроено
+
+| Что | Где | Как сжато |
+|---|---|---|
+| фильмы и аннотации | `docs/data/films.*.json.gz` | gzip |
+| индекс по словам (леммы, bm25 как у SQLite FTS5) | `docs/data/fts.*.json.gz` | термы и постинги из `films_fts` |
+| словоформа → лемма для запроса (pymorphy3) | `docs/data/lemmas.*.txt.gz` | только леммы, встречающиеся в каталоге |
+| эмбеддинги чанков | `docs/data/vectors.*.bin.gz` | 3072 → 1024 измерения, 4 бита на число |
+
+`docs/engine.js` повторяет логику `film_search.py`: тот же отбор по словам, смысловой поиск, слияние RRF и
+промпт реранкера. Для смысла и реранкера нужен ключ OpenAI — его вводят на странице, он хранится только в
+браузере (localStorage) и отправляется только в `api.openai.com`. Без ключа работает поиск по словам.
+
+Сжатие векторов проверено на 85 запросах из `GFF_cowork/scripts/p4/bench/bench_set.json`. Искомый фильм
+попадает в кандидаты для реранкера в 100% запросов, как и с полными векторами. Сам смысловой канал ставит
+фильм на первое место в 65% запросов против 67% у полных векторов.
+
+## Пересобрать данные (после изменения базы)
+
+```
+git lfs pull
+python -m pip install numpy pymorphy3 pymorphy3-dicts-ru
+python pages/build_site.py          # → docs/data/
+python pages/check_parity.py        # сверка docs/engine.js с film_search.py (нужен node ≥ 22)
+```
+
+Потом закоммитить `docs/data/` и отправить в `main` — Pages обновится сам за пару минут.
+
+## Включить Pages (один раз)
+
+Settings → Pages → Build and deployment → Source: **Deploy from a branch**, Branch: **main**, папка **/docs**.
+Адрес сайта: `https://<владелец>.github.io/soviet-movies-smart-search/`.
