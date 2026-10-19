@@ -144,7 +144,8 @@ def main():
         sys.exit(f"{db}: базы нет или это указатель Git LFS — выполни git lfs pull")
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(f"file:{db}?mode=ro&immutable=1", uri=True)
+    # mode=ro без immutable: видны и записи, ещё не перенесённые из WAL (сборка сразу после import)
+    conn = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
     if fs._fts_mode(conn) != 'lemmas':
         sys.exit("FTS-индекс в базе не по леммам — сначала python film_search.py reindex-fts")
     t0 = time.time()
