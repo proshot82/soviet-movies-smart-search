@@ -15,13 +15,16 @@ export — xlsx по фильмам film_id ≥ 7175 (аннотации кат�
      судьбе фильма, актёрах, жанре). Определяет дешёвая модель (FLAG_MODEL), ответы кешируются
      в imports/аннотации_классы.json по хешу аннотации — повторный запуск платит только за новые;
   3) остальные — от коротких к длинным.
-  Колонки «Новая аннотация» и «Источник новой аннотации» заполняются вручную.
+  Колонки «Новая аннотация» и «Источник новой аннотации» заполняются вручную. С --gff они заранее
+  заполняются описанием с gosfilmofond.ru (tools/gff_site_catalog.py), если оно лучше текущего; как найдено
+  совпадение — в колонке «Совпадение» (год ±1 — проверить). Ненужное предложение просто стереть.
 
 apply — заполненный xlsx → JSON-правки [{"film_id", "annotation", "source"}] для film_search.py import.
   Ошибка в любой строке (film_id < 7175 или нет в базе, название не совпадает с базой — строки
   сдвинуты, нет источника, обрыв на многоточие, film_id дважды) — JSON не пишется.
 """
 import argparse
+import gzip
 import hashlib
 import json
 import re
@@ -35,6 +38,7 @@ from openpyxl.styles import Alignment, Font
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
 from film_search import DB_PATH, get_openai_client  # noqa: E402
 
 FIRST_OPEN_ID = 7175        # film_id 1–7174 — каталоги ГФФ, аннотации не трогаем (PLAN.md, раздел 2)
@@ -73,8 +77,11 @@ FLAG_PROMPT = """Ниже аннотации советских фильмов, 
 
 HEADERS = ["Приоритет", "Группа", "film_id", "Название", "Год", "Тип", "Студия", "Длина", "Обрыв",
            "Не сюжет", "Текущая аннотация", "Текущий источник", "Поиск в Википедии",
-           "Новая аннотация", "Источник новой аннотации"]
-WIDTHS = [9, 12, 8, 36, 6, 15, 24, 7, 7, 9, 70, 30, 14, 70, 40]
+           "Новая аннотация", "Источник новой аннотации", "Совпадение"]
+WIDTHS = [9, 12, 8, 36, 6, 15, 24, 7, 7, 9, 70, 30, 14, 70, 40, 30]
+# Страны каталога ГФФ, при которых фильм может быть советским (остальные — зарубежные, не сопоставляются)
+SOVIET_COUNTRY = re.compile(r"ссср|cccр|россия|рсфср|украин|белорус|беларус|грузи|армени|азербайджан|казах|узбек|"
+                            r"киргиз|кыргыз|таджик|туркмен|молдав|молдов|латви|литв|эстони", re.I)
 
 
 def ann_hash(text):
@@ -161,6 +168,40 @@ def classify(films, classes):
     print(f"Токенов: {used_in:,} входных, {used_out:,} выходных; ≈ ${cost:.3f}")
 
 
+def gff_suggestions(films, classes, path):
+    """{film_id: (текст, url, примечание)} — описания каталога gosfilmofond.ru, которые лучше текущей аннотации.
+    Совпадение: то же название (целиком или без уточнения в скобках) и год ±1; при нескольких кандидатах
+    берётся единственный с точным годом, иначе фильм пропускается."""
+    from xlsx_to_json import norm, title_keys
+    index = {}
+    with gzip.open(path, "rt", encoding="utf-8") as f:
+        for line in f:
+            g = json.loads(line)
+            if g.get("annotation") and g.get("year") and (not g.get("country") or SOVIET_COUNTRY.search(g["country"])):
+                for k in title_keys(g["title"]):
+                    index.setdefault(k, []).append(g)
+    out, ambiguous = {}, 0
+    for film in films:
+        y = film["year"]
+        cands = {g["gff_id"]: g for k in title_keys(film["title"]) for g in index.get(k, [])
+                 if y and abs(g["year"] - y) <= 1}
+        exact = [g for g in cands.values() if g["year"] == y]
+        pick = exact or list(cands.values())
+        if len(pick) != 1:
+            ambiguous += len(pick) > 1
+            continue
+        g = pick[0]
+        new, old = clean_annotation(g["annotation"]), film["annotation"] or ""
+        if is_truncated(new) or norm(new) == norm(old) or norm(old).startswith(norm(new)):
+            continue
+        weak = is_truncated(old) or cached_plot(classes, film) is False or norm(new).startswith(norm(old).rstrip(". "))
+        if not weak and len(new) < len(old) + 40:
+            continue
+        note = f"ГФФ: «{g['title']}» {g['year']}" + ("" if g["year"] == y else " — год отличается, проверить")
+        out[film["film_id"]] = (new, g["url"], note)
+    return out, ambiguous
+
+
 def cmd_export(args):
     films = load_films(args.db)
     classes = load_classes()
@@ -173,6 +214,11 @@ def cmd_export(args):
         return
     if args.classify and todo:
         classify(todo, classes)
+    suggest, ambiguous = gff_suggestions(films, classes, args.gff) if args.gff else ({}, 0)
+    if args.gff:
+        n_year = sum(1 for v in suggest.values() if "проверить" in v[2])
+        print(f"Предложено описаний ГФФ: {len(suggest)} (из них год ±1: {n_year}); "
+              f"пропущено из-за нескольких кандидатов: {ambiguous}")
 
     rows = []
     for f in films:
@@ -194,7 +240,7 @@ def cmd_export(args):
         ws.append([n, group, f["film_id"], f["title"], f["year"], f["kind"], f["studio"], len(ann),
                    "да" if trunc else "", "да" if plot is False else "" if plot else "?",
                    ann, f["source"], f'=HYPERLINK("https://ru.wikipedia.org/w/index.php?search={query}","искать")',
-                   None, None])
+                   *suggest.get(f["film_id"], (None, None, None))])
     wrap = Alignment(wrap_text=True, vertical="top")
     top = Alignment(vertical="top")
     for row in ws.iter_rows(min_row=2):
@@ -314,6 +360,7 @@ def main():
     p.add_argument("--classify", action="store_true",
                    help=f"классифицировать «сюжет / не сюжет» моделью {FLAG_MODEL} (платно, см. --estimate)")
     p.add_argument("--estimate", action="store_true", help="только оценить стоимость классификации")
+    p.add_argument("--gff", help="каталог gosfilmofond.ru (imports/gff_site_catalog.jsonl.gz) — заполнить предложения")
     p = sub.add_parser("apply", help="заполненный xlsx → JSON-правки для film_search.py import")
     p.add_argument("xlsx", nargs="+")
     p.add_argument("--out", required=True)

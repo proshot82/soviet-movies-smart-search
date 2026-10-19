@@ -726,7 +726,7 @@ def _build_film_index(chunk_ids, chunk_to_film):
 # ─── Фильтры и строки результатов (общие для обоих каналов) ─────────
 
 RRF_K = 60  # константа слияния Reciprocal Rank Fusion (hybrid_search, fallback_order)
-_FILM_COLS = "film_id, title, genre, year, studio, director, annotation, cast_text"
+_FILM_COLS = "film_id, title, genre, year, studio, director, annotation, cast_text, source"
 
 
 def _like_escape(s):
@@ -756,10 +756,11 @@ def _filter_sql(year=None, studio=None, genre=None, alias="", kind=None):
 
 def _film_dict(row, **extra):
     """Строка (_FILM_COLS) → словарь результата поиска."""
-    film_id, title, genre, year, studio, director, ann, cast_t = row
+    film_id, title, genre, year, studio, director, ann, cast_t, src = row
     return {"film_id": film_id, "title": title or "", "genre": genre or "",
             "year": year, "studio": studio or "", "director": director or "",
-            "annotation": ann or "", "cast": cast_t or "", **extra}
+            "annotation": ann or "", "cast": cast_t or "",
+            "source": src if (src or "").startswith(("http://", "https://")) else "", **extra}
 
 
 # ─── FTS search ─────────────────────────────────────────────────────
@@ -1425,6 +1426,7 @@ body{
   mask-image:linear-gradient(to bottom,#000 62%,transparent);}
 .toggle-ann{display:inline-block;margin:6px 0 0 34px;font-family:var(--fd);font-weight:500;
   text-transform:uppercase;letter-spacing:0.06em;font-size:0.72rem;color:var(--red);cursor:pointer;}
+.sources-note{margin:14px 0 0;font-size:0.84rem;color:var(--ink-dim);}.sources-note a,.result-src a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px;}.result-src{margin:4px 0 0 34px;font-size:0.82rem;color:var(--ink-dim);}
 .toggle-ann:hover{color:var(--red-deep);}
 
 /* ─── Нижняя статистика ─── */
@@ -1547,6 +1549,7 @@ body{
   <div id="stages" class="stages"></div>
   <div id="notice" class="notice" hidden></div>
   <div id="results"></div>
+  <p class="sources-note">Аннотации — из каталогов Госфильмофонда, с сайтов <a href="https://gosfilmofond.ru/films/">gosfilmofond.ru</a>, <a href="https://animator.ru/">Аниматор.ру</a>, kino-teatr.ru и из Википедии (тексты Википедии — по лицензии <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru">CC BY-SA 4.0</a>). Ссылка на источник аннотации — у фильма.</p>
 
   <section class="box">
     <h3 class="box-h"><span class="bullet">&#9679;</span>Как искать: что писать в запросе</h3>
@@ -1675,6 +1678,7 @@ async function doSearch() {
         '<div class="result-ann' + (needCollapse ? ' collapsed' : '') + '" id="ann-' + i + '">' +
           esc(ann) + '</div>' +
         (needCollapse ? '<span class="toggle-ann" onclick="toggleAnn(' + i + ')">показать</span>' : '') +
+        (r.source ? '<div class="result-src"><a href="' + esc(r.source).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">источник</a></div>' : '') +
       '</div>';
     });
     resultsEl.innerHTML = html || '<div class="empty">Ничего не нашлось. Попробуй другую деталь сюжета, убери сомнительные подробности или сними фильтры.</div>';

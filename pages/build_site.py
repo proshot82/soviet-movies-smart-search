@@ -50,9 +50,12 @@ def write_gz(out_dir, stem, ext, data: bytes):
 
 
 def load_films(conn):
-    rows = conn.execute("""SELECT film_id, title, genre, year, studio, director, annotation, kind
+    rows = conn.execute("""SELECT film_id, title, genre, year, studio, director, annotation, kind, source
                            FROM films ORDER BY film_id""").fetchall()
-    return [[fid, t or "", g or "", y, s or "", d or "", a or "", k or ""] for fid, t, g, y, s, d, a, k in rows]
+    # источник — только ссылка (имя xlsx или каталога на сайте не показывается)
+    return [[fid, t or "", g or "", y, s or "", d or "", a or "", k or "",
+             src if (src or "").startswith(("http://", "https://")) else ""]
+            for fid, t, g, y, s, d, a, k, src in rows]
 
 
 def build_fts_index(conn, film_index):

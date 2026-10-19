@@ -83,7 +83,7 @@ export class Engine {
 
   film(idx) {
     const f = this.films[idx];
-    return { idx, film_id: f[0], title: f[1], genre: f[2], year: f[3], studio: f[4], director: f[5], annotation: f[6], kind: f[7] };
+    return { idx, film_id: f[0], title: f[1], genre: f[2], year: f[3], studio: f[4], director: f[5], annotation: f[6], kind: f[7], source: f[8] || '' };
   }
 
   // Фильтры как в fts_search/semantic_search: десятилетие, подстрока студии и жанра (без учёта регистра), тип

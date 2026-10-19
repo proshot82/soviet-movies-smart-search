@@ -254,6 +254,7 @@ function render(results) {
       (meta ? '<div class="result-meta">' + esc(meta) + '</div>' : '') +
       '<div class="result-ann' + (needCollapse ? ' collapsed' : '') + '" id="ann-' + i + '">' + esc(ann) + '</div>' +
       (needCollapse ? '<span class="toggle-ann" data-i="' + i + '">показать</span>' : '') +
+      (r.source ? '<div class="result-src"><a href="' + esc(r.source).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">источник</a></div>' : '') +
     '</div>';
   });
   const el = $('results');
