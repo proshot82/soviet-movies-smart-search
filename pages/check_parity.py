@@ -58,7 +58,8 @@ for _ in range(300):   # случайные обрывки аннотаций: 2
     queries.append(" ".join(words[i:i + rnd.randint(2, 7)]))
 queries += ["Ёлка", "елка", "ёжик в тумане", "Иван Грозный", "1941", "кот", "по на в", "", "!!!", "Мосфильм 1973"]
 filter_sets = [{}, {"year": 1960}, {"studio": "Мосфильм"}, {"genre": "комедия"},
-               {"year": 1930, "studio": "Ленфильм", "genre": "драма"}]
+               {"year": 1930, "studio": "Ленфильм", "genre": "драма"}, {"kind": "телефильм"},
+               {"kind": "фильм-спектакль", "year": 1980}, {"year": 1990}]
 
 fts_tasks = [{"query": q, "limit": 150, "filters": filter_sets[i % len(filter_sets)]} for i, q in enumerate(queries)]
 sem_tasks, hybrid_tasks = [], []

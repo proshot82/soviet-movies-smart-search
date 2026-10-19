@@ -6,7 +6,7 @@
     python pages/build_site.py --db путь.db --out docs/data
 
 Что получается (всё сжато gzip, браузер распаковывает сам через DecompressionStream):
-  films.*.json.gz    — фильмы (id, название, жанр, год, студия, режиссёр, аннотация), отсортированы по film_id
+  films.*.json.gz    — фильмы (id, название, жанр, год, студия, режиссёр, аннотация, тип), по возрастанию film_id
   fts.*.json.gz      — лемматизированный индекс FTS5, вынутый из films_fts через fts5vocab: термы и постинги
                        (документ, частота), длины документов — ровно то, по чему SQLite считает bm25
   lemmas.*.txt.gz    — словоформа → лемма (pymorphy3) для лемматизации запроса в браузере: формы из текста
@@ -50,9 +50,9 @@ def write_gz(out_dir, stem, ext, data: bytes):
 
 
 def load_films(conn):
-    rows = conn.execute("""SELECT film_id, title, genre, year, studio, director, annotation
+    rows = conn.execute("""SELECT film_id, title, genre, year, studio, director, annotation, kind
                            FROM films ORDER BY film_id""").fetchall()
-    return [[fid, t or "", g or "", y, s or "", d or "", a or ""] for fid, t, g, y, s, d, a in rows]
+    return [[fid, t or "", g or "", y, s or "", d or "", a or "", k or ""] for fid, t, g, y, s, d, a, k in rows]
 
 
 def build_fts_index(conn, film_index):

@@ -120,7 +120,10 @@ CREATE TABLE IF NOT EXISTS films (
     color     TEXT,
     format    TEXT,
     release_date TEXT,
-    source    TEXT
+    source    TEXT,
+    kind      TEXT,     -- тип: кинофильм, телефильм, фильм-спектакль, мультфильм, не игровое, фильм-опера/балет
+    country   TEXT,
+    episodes  INTEGER   -- число серий (сериалы)
 );
 
 -- FTS5 по ЛЕММАМ: standalone-таблица, rowid = film_id.
@@ -157,6 +160,13 @@ def _lc(s):
     return s.lower() if isinstance(s, str) else s
 
 
+# Колонки films, появившиеся после первой версии схемы: в старой базе добавляются при открытии
+_FILMS_ADDED_COLUMNS = {"kind": "TEXT", "country": "TEXT", "episodes": "INTEGER"}
+
+# Типы фильмов (значения films.kind) — в порядке, в котором они показываются в фильтре
+KINDS = ("кинофильм", "телефильм", "фильм-спектакль", "мультфильм", "не игровое", "фильм-опера/балет")
+
+
 def open_db(path=None, schema=True):
     conn = sqlite3.connect(path or DB_PATH, check_same_thread=False)
     conn.execute("PRAGMA journal_mode=WAL")
@@ -164,6 +174,11 @@ def open_db(path=None, schema=True):
     conn.create_function("lc", 1, _lc, deterministic=True)
     if schema:
         conn.executescript(SCHEMA)
+        have = {r[1] for r in conn.execute("PRAGMA table_info(films)")}
+        for col, typ in _FILMS_ADDED_COLUMNS.items():
+            if col not in have:
+                conn.execute(f"ALTER TABLE films ADD COLUMN {col} {typ}")
+        conn.commit()
     return conn
 
 
@@ -309,87 +324,156 @@ def _fts_is_lemmatized(conn):
 
 # ─── Import catalog ─────────────────────────────────────────────────
 
+# Поля JSON-записи → колонки films (cast принимается и как cast_text)
+_IMPORT_FIELDS = ("title", "genre", "year", "studio", "director", "screenwriter", "annotation", "cast_text",
+                  "color", "format", "release_date", "source", "kind", "country", "episodes")
+# От этих полей зависят чанки (make_chunks) и эмбеддинги: при их правке чанки фильма пересобираются
+_CHUNK_FIELDS = ("title", "year", "annotation")
+
+
+def _import_values(film, catalog_path):
+    """Запись каталога → {колонка: значение} только для полей, которые в записи есть.
+    Строки обрезаются по краям, пустая строка — это NULL."""
+    vals = {}
+    for key in _IMPORT_FIELDS:
+        src = key
+        if key == "cast_text" and "cast_text" not in film:
+            src = "cast"
+        if src not in film:
+            continue
+        v = film[src]
+        if isinstance(v, str):
+            v = v.strip() or None
+        vals[key] = v
+    for key in ("year", "episodes"):
+        if vals.get(key) is not None:
+            try:
+                vals[key] = int(vals[key])
+            except (TypeError, ValueError):
+                vals[key] = None
+    return vals
+
+
 def cmd_import(args):
-    """Импортировать JSON-каталоги в SQLite."""
+    """Импортировать JSON-каталоги в SQLite.
+
+    Запись без film_id — новый фильм. Дублем (пропуск) считается только полное совпадение
+    названия, года, студии и аннотации: так повторный импорт того же файла ничего не удваивает,
+    а разные фильмы с одним названием и годом (телефильм и телеспектакль, два «Соседи» 1979)
+    не теряются. Такие совпадения по названию и году перечисляются в логе — для проверки.
+
+    Запись с film_id — правка существующего фильма: меняются только поля, которые в записи есть.
+    Если поменялись название, год или аннотация, чанки фильма пересобираются, а его эмбеддинги
+    удаляются — их досчитает `embed --resume`.
+
+    --dry-run: всё то же, но ничего не записывается — только отчёт."""
     conn = open_db(args.db)
-    
+    dry = getattr(args, 'dry_run', False)
+
     try:
-        total_imported = 0
-        total_skipped = 0
-        
+        stats = {"new": 0, "dup": 0, "empty": 0, "updated": 0, "unchanged": 0, "missing_id": 0}
+        same_title = []      # (новая запись, film_id уже имеющихся с тем же названием и годом)
+        rechunk = set()      # film_id, у которых надо пересобрать чанки
+
         for catalog_path in args.catalogs:
             log.info(f"Импорт {catalog_path}...")
-            with open(catalog_path, encoding='utf-8') as f:
+            with open(catalog_path, encoding='utf-8-sig') as f:
                 films = json.load(f)
-            
-            imported = 0
-            skipped = 0
+            if not isinstance(films, list):
+                log.error(f"  {catalog_path}: ожидается JSON-массив записей")
+                continue
+
             for film in films:
-                title = film.get('title', '').strip()
+                if not isinstance(film, dict):
+                    stats["empty"] += 1
+                    continue
+                vals = _import_values(film, catalog_path)
+                film_id = film.get("film_id")
+
+                if film_id is not None:
+                    row = conn.execute(f"SELECT {', '.join(_IMPORT_FIELDS)} FROM films WHERE film_id = ?",
+                                       (film_id,)).fetchone()
+                    if row is None:
+                        stats["missing_id"] += 1
+                        log.warning(f"  film_id {film_id} нет в базе — запись пропущена")
+                        continue
+                    old = dict(zip(_IMPORT_FIELDS, row))
+                    if vals.get("title", old["title"]) is None:
+                        stats["empty"] += 1
+                        continue
+                    changed = {k: v for k, v in vals.items() if old[k] != v}
+                    if not changed:
+                        stats["unchanged"] += 1
+                        continue
+                    conn.execute(f"UPDATE films SET {', '.join(k + ' = ?' for k in changed)} WHERE film_id = ?",
+                                 (*changed.values(), film_id))
+                    if any(k in changed for k in _CHUNK_FIELDS):
+                        rechunk.add(film_id)
+                    stats["updated"] += 1
+                    continue
+
+                title = vals.get("title")
                 if not title:
-                    skipped += 1
+                    stats["empty"] += 1
                     continue
-                
-                # Check duplicate by title + year + studio (Ф6-П3: 3 законные пары title+year — разные студии)
-                year = film.get('year')
-                studio = film.get('studio')
-                existing = conn.execute(
-                    "SELECT film_id FROM films WHERE title = ? AND year IS ? AND studio IS ?",
-                    (title, year, studio)
-                ).fetchone()
-                if existing:
-                    skipped += 1
+                vals.setdefault("source", catalog_path)
+                if conn.execute("""SELECT 1 FROM films WHERE title = ? AND year IS ? AND studio IS ?
+                                   AND annotation IS ?""",
+                                (title, vals.get("year"), vals.get("studio"), vals.get("annotation"))).fetchone():
+                    stats["dup"] += 1
                     continue
-                
-                conn.execute("""
-                    INSERT INTO films (title, genre, year, studio, director, screenwriter,
-                                       annotation, cast_text, color, format, release_date, source)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    title,
-                    film.get('genre'),
-                    year,
-                    film.get('studio'),
-                    film.get('director'),
-                    film.get('screenwriter'),
-                    film.get('annotation'),
-                    film.get('cast', film.get('cast_text')),
-                    film.get('color'),
-                    film.get('format'),
-                    film.get('release_date'),
-                    catalog_path,
-                ))
-                imported += 1
-            
-            conn.commit()
-            log.info(f"  {imported} импортировано, {skipped} пропущено (дубли/пустые)")
-            total_imported += imported
-            total_skipped += skipped
-        
-        # Generate chunks for newly imported films that don't have chunks yet
+                similar = [r[0] for r in conn.execute("SELECT film_id FROM films WHERE title = ? AND year IS ?",
+                                                     (title, vals.get("year")))]
+                cols = list(vals)
+                cur = conn.execute(f"INSERT INTO films ({', '.join(cols)}) VALUES ({', '.join('?' * len(cols))})",
+                                   [vals[c] for c in cols])
+                if similar:
+                    same_title.append((cur.lastrowid, title, vals.get("year"), similar))
+                stats["new"] += 1
+
+        # Пересборка чанков у исправленных фильмов: старые чанки и их эмбеддинги удаляются,
+        # новые создаются ниже вместе с чанками новых фильмов
+        for fid in rechunk:
+            conn.execute("DELETE FROM embeddings WHERE chunk_id IN (SELECT chunk_id FROM chunks WHERE film_id = ?)",
+                         (fid,))
+            conn.execute("DELETE FROM chunks WHERE film_id = ?", (fid,))
+
         films_without_chunks = conn.execute("""
             SELECT film_id, title, year, annotation
             FROM films
             WHERE film_id NOT IN (SELECT DISTINCT film_id FROM chunks)
         """).fetchall()
-        
         chunk_count = 0
         for film_id, title, year, annotation in films_without_chunks:
-            chunks = make_chunks(title, year, annotation)
-            for chunk_text in chunks:
-                conn.execute("INSERT INTO chunks (film_id, chunk_text) VALUES (?, ?)",
-                             (film_id, chunk_text))
+            for chunk_text in make_chunks(title, year, annotation):
+                conn.execute("INSERT INTO chunks (film_id, chunk_text) VALUES (?, ?)", (film_id, chunk_text))
                 chunk_count += 1
+
+        log.info(f"Новых фильмов: {stats['new']}, исправлено: {stats['updated']} "
+                 f"(из них с новыми чанками: {len(rechunk)}), без изменений: {stats['unchanged']}, "
+                 f"дублей пропущено: {stats['dup']}, пустых: {stats['empty']}, "
+                 f"film_id не найден: {stats['missing_id']}; новых чанков: {chunk_count}")
+        if same_title:
+            log.info(f"Добавлены фильмы, у которых в базе уже есть фильм с тем же названием и годом "
+                     f"({len(same_title)}) — проверьте, что это разные фильмы:")
+            for new_id, title, year, ids in same_title[:50]:
+                log.info(f"  {new_id}: «{title}» ({year}) — уже есть film_id {', '.join(map(str, ids))}")
+            if len(same_title) > 50:
+                log.info(f"  … и ещё {len(same_title) - 50}")
+
+        if dry:
+            conn.rollback()
+            log.info("--dry-run: ничего не записано")
+            return
         conn.commit()
-        
+
         # Построить лемматизированный FTS-индекс по всем фильмам
         build_fts(conn)
-        
+
         total_films = conn.execute("SELECT COUNT(*) FROM films").fetchone()[0]
         total_chunks = conn.execute("SELECT COUNT(*) FROM chunks").fetchone()[0]
-        
-        log.info(f"Итого: {total_imported} новых фильмов, {chunk_count} новых чанков")
-        log.info(f"База: {total_films} фильмов, {total_chunks} чанков")
+        log.info(f"База: {total_films} фильмов, {total_chunks} чанков. "
+                 "Эмбеддинги для новых чанков: python film_search.py embed --resume")
     finally:
         conn.close()
 
@@ -650,9 +734,13 @@ def _like_escape(s):
     return s.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
 
 
-def _filter_sql(year=None, studio=None, genre=None, alias=""):
-    """Условия фильтров (десятилетие, подстрока студии и жанра без учёта регистра) → (список SQL, параметры)."""
+def _filter_sql(year=None, studio=None, genre=None, alias="", kind=None):
+    """Условия фильтров (десятилетие, подстрока студии и жанра без учёта регистра, тип фильма)
+    → (список SQL, параметры)."""
     parts, params = [], []
+    if kind:
+        parts.append(f"{alias}kind = ?")
+        params.append(kind)
     if year:
         decade = (year // 10) * 10
         parts.append(f"{alias}year BETWEEN ? AND ?")
@@ -676,7 +764,7 @@ def _film_dict(row, **extra):
 
 # ─── FTS search ─────────────────────────────────────────────────────
 
-def fts_search(conn, query, limit=20, year=None, studio=None, genre=None):
+def fts_search(conn, query, limit=20, year=None, studio=None, genre=None, kind=None):
     """Full-text search with optional filters. Two-tier: AND first, then OR for recall."""
     # Strip everything except letters, digits, spaces (FTS5 tokenizer splits on _ too)
     cleaned = re.sub(r'[_\W]+', ' ', query, flags=re.UNICODE)
@@ -689,7 +777,7 @@ def fts_search(conn, query, limit=20, year=None, studio=None, genre=None):
         return []
     
     # Build filter clauses (reused for both tiers)
-    where_parts, filter_params = _filter_sql(year, studio, genre, alias="f.")
+    where_parts, filter_params = _filter_sql(year, studio, genre, alias="f.", kind=kind)
     filter_sql = (" AND " + " AND ".join(where_parts)) if where_parts else ""
     
     sql_template = f"""
@@ -756,7 +844,7 @@ def _embed_queries(client, queries):
                 raise
 
 
-def semantic_search(conn, query_vecs, limit=20, year=None, studio=None, genre=None):
+def semantic_search(conn, query_vecs, limit=20, year=None, studio=None, genre=None, kind=None):
     """Semantic search across chunk embeddings. Returns film-level results."""
     vecs, chunk_ids, chunk_to_film = _load_index(conn)
     if len(chunk_ids) == 0:
@@ -785,7 +873,7 @@ def semantic_search(conn, query_vecs, limit=20, year=None, studio=None, genre=No
     film_scores = {idx_to_fid[i]: float(best_film_scores[i]) for i in above}
     
     # Apply filters: фильтр по всей таблице films, без списка id в запросе (до ~7 тыс. параметров)
-    where_parts, params = _filter_sql(year, studio, genre)
+    where_parts, params = _filter_sql(year, studio, genre, kind=kind)
     if where_parts and film_scores:
         valid_ids = set(r[0] for r in conn.execute(
             f"SELECT film_id FROM films WHERE {' AND '.join(where_parts)}", params
@@ -861,7 +949,7 @@ def expand_query(client, query):
 
 def hybrid_search(conn, client, query, limit=50, expand=True,
                   year=None, studio=None, genre=None,
-                  fts_weight=0.3, sem_weight=0.7, status=None):
+                  fts_weight=0.3, sem_weight=0.7, status=None, kind=None):
     """Hybrid FTS + semantic search with RRF fusion.
 
     Returns (results, variants). У каждого результата есть fts_rank / sem_rank — место в
@@ -891,8 +979,8 @@ def hybrid_search(conn, client, query, limit=50, expand=True,
     #   limit only controls metadata fetch; keeping it narrow prevents
     #   expansion-polluted results from dominating RRF)
     fts_pool = limit * 3
-    fts_results = fts_search(conn, fts_query, limit=fts_pool, year=year, studio=studio, genre=genre)
-    sem_results = (semantic_search(conn, query_vecs, limit=limit, year=year, studio=studio, genre=genre)
+    fts_results = fts_search(conn, fts_query, limit=fts_pool, year=year, studio=studio, genre=genre, kind=kind)
+    sem_results = (semantic_search(conn, query_vecs, limit=limit, year=year, studio=studio, genre=genre, kind=kind)
                    if query_vecs is not None else [])
 
     # RRF fusion
@@ -1103,12 +1191,13 @@ def cmd_search(args):
         print(f"Запрос: {query}")
         if args.year: print(f"Фильтр: десятилетие {(args.year // 10) * 10}-х")
         if args.studio: print(f"Фильтр: студия «{args.studio}»")
+        if args.kind: print(f"Фильтр: тип «{args.kind}»")
 
         fts_w, sem_w = fusion_weights(do_rerank)
 
         candidates, variants = hybrid_search(
             conn, client, query, limit=50, expand=do_expand,
-            year=args.year, studio=args.studio, genre=args.genre,
+            year=args.year, studio=args.studio, genre=args.genre, kind=args.kind,
             fts_weight=fts_w, sem_weight=sem_w,
         )
         
@@ -1360,13 +1449,13 @@ body{
       <h1 class="logo"><span class="logo-1">Кинокаталог</span><span class="logo-2">Госфильмофонда</span></h1>
     </div>
     <div class="mh-rule"></div>
-    <div class="mh-sub">Советское кино · Архив <span class="hl">1918&ndash;1987</span> · Печатный каталог в полном объёме</div>
+    <div class="mh-sub">Советское кино и телевидение · <span class="hl">__YEARS__</span> · Кинофильмы, телефильмы, телеспектакли, мультфильмы</div>
   </header>
 
   <div class="filmstrip" aria-hidden="true"></div>
 
   <div class="tvnote">
-    <span class="tvnote-h">Телефильмов здесь пока нет.</span>Ни Штирлица, ни Д&rsquo;Артаньяна. Следите за обновлениями.
+    <span class="tvnote-h">Откуда аннотации.</span>Кинофильмы 1918&ndash;1987 &mdash; из печатных каталогов Госфильмофонда; телефильмы, телеспектакли, мультфильмы и фильмы 1988&ndash;1991 &mdash; из других источников, часть аннотаций краткие.
   </div>
 
   <section class="search">
@@ -1399,6 +1488,7 @@ body{
         <option value="1960">1960-е</option>
         <option value="1970">1970-е</option>
         <option value="1980">1980-е</option>
+        <option value="1990">1990–1991</option>
       </select>
       <select id="f-studio" class="sel" title="Студия">
         <option value="">Любая студия</option>
@@ -1421,6 +1511,15 @@ body{
         <option value="Рижская">Рижская</option>
         <option value="Литовская">Литовская</option>
         <option value="Свердловская">Свердловская</option>
+      </select>
+      <select id="f-kind" class="sel" title="Тип">
+        <option value="">Любой тип</option>
+        <option value="кинофильм">кинофильмы</option>
+        <option value="телефильм">телефильмы</option>
+        <option value="фильм-спектакль">телеспектакли</option>
+        <option value="мультфильм">мультфильмы</option>
+        <option value="не игровое">неигровые (концерты, хроника)</option>
+        <option value="фильм-опера/балет">фильмы-оперы и балеты</option>
       </select>
       <select id="f-genre" class="sel" title="Жанр">
         <option value="">Любой жанр</option>
@@ -1477,7 +1576,7 @@ body{
     <p class="box-foot">Одна точная деталь сильнее трёх размытых. Не уверен в детали — опусти её: память путает роли, реранкер делает на это поправку. Жанр и десятилетие задавай фильтрами под полем поиска, а не словами в запросе.</p>
   </section>
 
-  <div class="stats-bar" id="statsBar">__STATS__ · аннотированный каталог Госфильмофонда</div>
+  <div class="stats-bar" id="statsBar">__STATS__ · аннотированный каталог Госфильмофонда и другие источники</div>
 
 </div>
 
@@ -1525,6 +1624,7 @@ async function doSearch() {
     year: parseInt(document.getElementById('f-year').value) || null,
     studio: document.getElementById('f-studio').value.trim() || null,
     genre: document.getElementById('f-genre').value.trim() || null,
+    kind: document.getElementById('f-kind').value || null,
   };
 
   setBusy(true);
@@ -1644,7 +1744,8 @@ def cmd_serve(args):
     stats_str = f"{films_count} фильмов · {chunks_count} чанков · {embedded_count} эмбеддингов"
     # Подпись внизу страницы — без технических слов (чанки, эмбеддинги): только объём базы и годы
     page_stats = f"{films_count} фильмов" + (f" {year_span[0]}–{year_span[1]} годов" if year_span and year_span[0] and year_span[1] else "")
-    html = HTML_TEMPLATE.replace('__STATS__', page_stats)
+    years = f"{year_span[0]}&ndash;{year_span[1]}" if year_span and year_span[0] and year_span[1] else ""
+    html = HTML_TEMPLATE.replace('__STATS__', page_stats).replace('__YEARS__', years)
 
     @app.route('/')
     def index():
@@ -1681,6 +1782,7 @@ def cmd_serve(args):
         studio = data.get('studio') if isinstance(data.get('studio'), str) else None
         genre = data.get('genre') if isinstance(data.get('genre'), str) else None
         studio, genre = (studio or '').strip() or None, (genre or '').strip() or None
+        kind = data.get('kind') if data.get('kind') in KINDS else None
         
         # Per-request connection (thread-safe, no schema — already created at startup)
         conn = open_db(db_path, schema=False)
@@ -1695,7 +1797,7 @@ def cmd_serve(args):
             if do_fts:
                 candidates, variants = hybrid_search(
                     conn, client, query, limit=50, expand=do_expand,
-                    year=year, studio=studio, genre=genre,
+                    year=year, studio=studio, genre=genre, kind=kind,
                     fts_weight=fts_w, sem_weight=sem_w, status=status,
                 )
                 if status.get('sem_failed'):
@@ -1707,7 +1809,7 @@ def cmd_serve(args):
                     variants = [query]
                 query_vecs = _embed_queries(client, variants)
                 candidates = semantic_search(
-                    conn, query_vecs, limit=50, year=year, studio=studio, genre=genre,
+                    conn, query_vecs, limit=50, year=year, studio=studio, genre=genre, kind=kind,
                 )
 
             if do_rerank and candidates:
@@ -1795,6 +1897,7 @@ def main():
     
     p_import = sub.add_parser('import', help='Импорт JSON-каталогов в SQLite')
     p_import.add_argument('catalogs', nargs='+', help='JSON-файлы каталогов')
+    p_import.add_argument('--dry-run', action='store_true', help='Только отчёт: что добавится и изменится, без записи в базу')
     
     p_embed = sub.add_parser('embed', help='Генерация эмбеддингов')
     p_embed.add_argument('--resume', action='store_true', help='Продолжить прерванную генерацию')
@@ -1810,6 +1913,7 @@ def main():
     p_search.add_argument('--year', type=int, help='Фильтр по десятилетию')
     p_search.add_argument('--studio', help='Фильтр по студии')
     p_search.add_argument('--genre', help='Фильтр по жанру')
+    p_search.add_argument('--kind', choices=KINDS, help='Фильтр по типу фильма')
     
     p_serve = sub.add_parser('serve', help='Веб-интерфейс')
     p_serve.add_argument('--port', type=int, default=8080)

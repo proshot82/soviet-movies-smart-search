@@ -231,13 +231,13 @@ body{
       <h1 class="logo"><span class="logo-1">Кинокаталог</span><span class="logo-2">Госфильмофонда</span></h1>
     </div>
     <div class="mh-rule"></div>
-    <div class="mh-sub">Советское кино · Архив <span class="hl">1918&ndash;1987</span> · Печатный каталог в полном объёме</div>
+    <div class="mh-sub">Советское кино и телевидение · <span class="hl" id="yearsText">1918&ndash;1991</span> · Кинофильмы, телефильмы, телеспектакли, мультфильмы</div>
   </header>
 
   <div class="filmstrip" aria-hidden="true"></div>
 
   <div class="tvnote">
-    <span class="tvnote-h">Телефильмов здесь пока нет.</span>Ни Штирлица, ни Д&rsquo;Артаньяна. Следите за обновлениями.
+    <span class="tvnote-h">Откуда аннотации.</span>Кинофильмы 1918&ndash;1987 &mdash; из печатных каталогов Госфильмофонда; телефильмы, телеспектакли, мультфильмы и фильмы 1988&ndash;1991 &mdash; из других источников, часть аннотаций краткие.
   </div>
 
   <section class="search">
@@ -287,6 +287,7 @@ body{
         <option value="1960">1960-е</option>
         <option value="1970">1970-е</option>
         <option value="1980">1980-е</option>
+        <option value="1990">1990–1991</option>
       </select>
       <select id="f-studio" class="sel" title="Студия">
         <option value="">Любая студия</option>
@@ -309,6 +310,15 @@ body{
         <option value="Рижская">Рижская</option>
         <option value="Литовская">Литовская</option>
         <option value="Свердловская">Свердловская</option>
+      </select>
+      <select id="f-kind" class="sel" title="Тип">
+        <option value="">Любой тип</option>
+        <option value="кинофильм">кинофильмы</option>
+        <option value="телефильм">телефильмы</option>
+        <option value="фильм-спектакль">телеспектакли</option>
+        <option value="мультфильм">мультфильмы</option>
+        <option value="не игровое">неигровые (концерты, хроника)</option>
+        <option value="фильм-опера/балет">фильмы-оперы и балеты</option>
       </select>
       <select id="f-genre" class="sel" title="Жанр">
         <option value="">Любой жанр</option>
@@ -365,7 +375,7 @@ body{
     <p class="box-foot">Одна точная деталь сильнее трёх размытых. Не уверен в детали — опусти её: память путает роли, реранкер делает на это поправку. Жанр и десятилетие задавай фильтрами под полем поиска, а не словами в запросе.</p>
   </section>
 
-  <div class="stats-bar" id="statsBar"><span id="statsText">Кинокаталог</span> · аннотированный каталог Госфильмофонда</div>
+  <div class="stats-bar" id="statsBar"><span id="statsText">Кинокаталог</span> · аннотированный каталог Госфильмофонда и другие источники</div>
 
 </div>
 

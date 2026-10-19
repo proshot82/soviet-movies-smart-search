@@ -64,7 +64,7 @@ export function parseVectors(buf, nChunks, dims) {
 
 export class Engine {
   constructor({ films, fts, lemmas, vectors }) {
-    // films: [[film_id, title, genre, year, studio, director, annotation], …] по возрастанию film_id
+    // films: [[film_id, title, genre, year, studio, director, annotation, kind], …] по возрастанию film_id
     this.films = films;
     this.nDocs = films.length;
     this.lemmas = lemmas;
@@ -83,16 +83,17 @@ export class Engine {
 
   film(idx) {
     const f = this.films[idx];
-    return { idx, film_id: f[0], title: f[1], genre: f[2], year: f[3], studio: f[4], director: f[5], annotation: f[6] };
+    return { idx, film_id: f[0], title: f[1], genre: f[2], year: f[3], studio: f[4], director: f[5], annotation: f[6], kind: f[7] };
   }
 
-  // Фильтры как в fts_search/semantic_search: десятилетие, подстрока студии и жанра (без учёта регистра)
-  makeFilter({ year, studio, genre } = {}) {
-    if (!year && !studio && !genre) return null;
+  // Фильтры как в fts_search/semantic_search: десятилетие, подстрока студии и жанра (без учёта регистра), тип
+  makeFilter({ year, studio, genre, kind } = {}) {
+    if (!year && !studio && !genre && !kind) return null;
     const decade = year ? Math.floor(year / 10) * 10 : 0;
     const s = studio ? studio.toLowerCase() : null;
     const g = genre ? genre.toLowerCase() : null;
     return idx => {
+      if (kind && this.films[idx][7] !== kind) return false;
       if (year) {
         const y = this.films[idx][3];
         if (y == null || y < decade || y > decade + 9) return false;

@@ -58,6 +58,7 @@ worker.onmessage = ({ data }) => {
     const m = data.manifest;
     dims = m.dims;
     $('statsText').textContent = `${m.films} фильмов ${m.year_min}–${m.year_max} годов`;
+    $('yearsText').textContent = `${m.year_min}–${m.year_max}`;
     $('rerankModel').textContent = m.rerank_model || RERANK_MODEL;
     if ($('status').textContent.startsWith('Загружаю')) $('status').textContent = '';
     readyResolve();
@@ -163,6 +164,7 @@ async function doSearch() {
     year: parseInt($('f-year').value) || null,
     studio: $('f-studio').value.trim() || null,
     genre: $('f-genre').value.trim() || null,
+    kind: $('f-kind').value || null,
   };
 
   try {
