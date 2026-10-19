@@ -228,7 +228,9 @@ def wiki_suggestions(films, classes, path, taken):
     with gzip.open(path, "rt", encoding="utf-8") as f:
         for line in f:
             r = json.loads(line)
-            if r.get("plot") and r["film_id"] in by_id and r["film_id"] not in taken:
+            # ГФФ в приоритете: текст, уже взятый с gosfilmofond.ru, Википедией не заменяется
+            if (r.get("plot") and r["film_id"] in by_id and r["film_id"] not in taken
+                    and "gosfilmofond.ru" not in (by_id[r["film_id"]]["source"] or "")):
                 recs.append(r)
     kinds = series_kinds([r for r in recs if r["episodes"]])
     out, skipped_series = {}, 0
@@ -344,8 +346,19 @@ def cmd_export(args):
         print(f"Википедия: кандидатов {len(wiki)}; посерийных сюжетов сериалов со сквозным сюжетом "
               f"(не предлагаются): {skipped_series}")
         suggest.update(wiki)
+    # аннотации с латинскими двойниками и «_x000D_» без другой замены — исправленный текст с прежним источником
+    fixes = 0
+    for f in films:
+        if f["film_id"] not in suggest and f["annotation"] and fix_text(f["annotation"]) != f["annotation"]:
+            suggest[f["film_id"]] = (clean_annotation(f["annotation"]), f["source"] or "—",
+                                     "исправление: латинские буквы в русских словах")
+            fixes += 1
+    if fixes:
+        print(f"Исправлений латинских букв в русских словах: {fixes}")
     if suggest:
-        verdict = verify_matches({f["film_id"]: f for f in films}, suggest)
+        to_verify = {fid: v for fid, v in suggest.items() if not v[2].startswith("исправление")}
+        verdict = verify_matches({f["film_id"]: f for f in films}, to_verify) if to_verify else {}
+        verdict.update({fid: "yes" for fid in suggest if fid not in to_verify})
         dropped = [fid for fid, v in verdict.items() if v == "no"]
         for fid, v in verdict.items():
             text, url, note = suggest[fid]
@@ -354,7 +367,7 @@ def cmd_export(args):
         print(f"Сверка моделью: тот же фильм {sum(v == 'yes' for v in verdict.values())}, "
               f"не уверена {sum(v == 'unsure' for v in verdict.values())}, другой фильм {len(dropped)}")
     if suggest:
-        for src in ("ГФФ", "Википедия"):
+        for src in ("ГФФ", "Википедия", "исправление"):
             vals = [v for v in suggest.values() if v[0] and v[2].startswith(src)]
             print(f"Предложено: {src} — {len(vals)} (с пометкой «проверить»: "
                   f"{sum(1 for v in vals if 'проверить' in v[2])})")
@@ -404,8 +417,21 @@ def cmd_export(args):
     print(f"Список работ: {out}")
 
 
+# Латинские двойники кириллических букв (в каталогах встречается «капpизов» с латинской p — такое слово не
+# находится поиском по словам). I/i не трогаем: римские цифры («ХIII»).
+HOMOGLYPHS = str.maketrans("aceopxyACEHKMOPTXB", "асеорхуАСЕНКМОРТХВ")
+
+
+def fix_text(text):
+    """Латинские двойники в словах с кириллицей → кириллица; артефакт Excel «_x000D_» → перевод строки."""
+    text = str(text or "").replace("_x000D_", "\n")
+    return re.sub(r"\w+", lambda m: m.group(0).translate(HOMOGLYPHS)
+                  if re.search(r"[а-яё]", m.group(0), re.I) and re.search(r"[a-z]", m.group(0), re.I) else m.group(0),
+                  text)
+
+
 def clean_annotation(text):
-    text = str(text or "").replace("\r\n", "\n").replace("\r", "\n").replace("\xa0", " ")
+    text = fix_text(text).replace("\r\n", "\n").replace("\r", "\n").replace("\xa0", " ")
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r" *\n *", "\n", text)
     return re.sub(r"\n{3,}", "\n\n", text).strip()
