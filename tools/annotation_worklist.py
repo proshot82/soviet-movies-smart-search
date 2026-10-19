@@ -17,7 +17,9 @@ export — xlsx по фильмам film_id ≥ 7175 (аннотации кат�
   3) остальные — от коротких к длинным.
   Колонки «Новая аннотация» и «Источник новой аннотации» заполняются вручную. С --gff они заранее
   заполняются описанием с gosfilmofond.ru (tools/gff_site_catalog.py), если оно лучше текущего; как найдено
-  совпадение — в колонке «Совпадение» (год ±1 — проверить). Ненужное предложение просто стереть.
+  совпадение — в колонке «Совпадение» (год ±1 — проверить). С --wiki — так же разделом «Сюжет» из Википедии
+  (tools/wiki_plots.py) там, где нет предложения ГФФ. Каждую пару сверяет модель («тот же фильм?»), решения
+  кешируются в imports/аннотации_сверка.json. Ненужное предложение просто стереть.
 
 apply — заполненный xlsx → JSON-правки [{"film_id", "annotation", "source"}] для film_search.py import.
   Ошибка в любой строке (film_id < 7175 или нет в базе, название не совпадает с базой — строки
@@ -169,6 +171,79 @@ def classify(films, classes):
     print(f"Токенов: {used_in:,} входных, {used_out:,} выходных; ≈ ${cost:.3f}")
 
 
+def better(film, new, classes):
+    """Новый текст лучше текущей аннотации: не обрыв, длиннее старой, не её начало; если старая не обрыв и не
+    «не сюжет» — длиннее хотя бы на 40 символов."""
+    from xlsx_to_json import norm
+    old = film["annotation"] or ""
+    if not new or is_truncated(new) or len(new) <= len(old) or norm(old).startswith(norm(new)):
+        return False
+    weak = is_truncated(old) or cached_plot(classes, film) is False or norm(new).startswith(norm(old).rstrip(". "))
+    return weak or len(new) >= len(old) + 40
+
+
+SERIES_PATH = ROOT / "imports" / "аннотации_сериалы.json"
+SERIES_PROMPT = """Ниже разделы «Сюжет» статей Википедии о советских сериалах, разбитые по сериям. Для каждого \
+определи, как устроен сериал: "through" — сквозной сюжет (серии продолжают одну историю: «Семнадцать мгновений \
+весны», «Гостья из будущего»), "anthology" — серии — отдельные законченные истории с общими героями («Следствие \
+ведут знатоки», «Приключения Шерлока Холмса» по отдельным рассказам).
+
+Верни СТРОГО JSON-массив без пояснений: [{{"id": <номер>, "kind": "through"|"anthology"}}, ...]
+
+{items}"""
+
+
+def series_kinds(recs):
+    """{film_id: "through"|"anthology"} для посерийных сюжетов Википедии; кеш — SERIES_PATH (там же ручные
+    решения; "skip" — текст не брать, например внутри сюжета списки «В ролях»)."""
+    cache = json.loads(SERIES_PATH.read_text(encoding="utf-8")) if SERIES_PATH.exists() else {}
+    todo = [r for r in recs if str(r["film_id"]) not in cache]
+    if todo:
+        client = get_openai_client()
+        for start in range(0, len(todo), 10):
+            batch = todo[start:start + 10]
+            items = "\n\n".join(f"[{r['film_id']}] «{r['title']}» ({r['year']}):\n{r['plot'][:2500]}" for r in batch)
+            for attempt in range(3):
+                try:
+                    resp = client.chat.completions.create(
+                        model=FLAG_MODEL, messages=[{"role": "user", "content": SERIES_PROMPT.format(items=items)}],
+                        reasoning_effort=FLAG_EFFORT, max_completion_tokens=8000)
+                    text = resp.choices[0].message.content.strip().replace("```json", "").replace("```", "")
+                    for it in json.loads(text):
+                        if it.get("kind") in ("through", "anthology"):
+                            cache[str(int(it["id"]))] = it["kind"]
+                    break
+                except Exception as e:      # сбой сети или формата ответа — повтор
+                    print(f"  сериалы: {e}", file=sys.stderr)
+            SERIES_PATH.write_text(json.dumps(cache, ensure_ascii=False, indent=0), encoding="utf-8")
+    return {r["film_id"]: cache.get(str(r["film_id"])) for r in recs}
+
+
+def wiki_suggestions(films, classes, path, taken):
+    """{film_id: (текст, url, примечание)} — раздел «Сюжет» Википедии (tools/wiki_plots.py), если он лучше
+    текущей аннотации и для фильма нет предложения ГФФ (taken). Посерийный сюжет сериала со сквозным сюжетом
+    не предлагается — нужен общий сюжет (правило владельца); посерийный сюжет сериала из отдельных историй — да."""
+    by_id = {f["film_id"]: f for f in films}
+    recs = []
+    with gzip.open(path, "rt", encoding="utf-8") as f:
+        for line in f:
+            r = json.loads(line)
+            if r.get("plot") and r["film_id"] in by_id and r["film_id"] not in taken:
+                recs.append(r)
+    kinds = series_kinds([r for r in recs if r["episodes"]])
+    out, skipped_series = {}, 0
+    for r in recs:
+        film = by_id[r["film_id"]]
+        if r["episodes"] and kinds.get(r["film_id"]) != "anthology":
+            skipped_series += 1
+            continue
+        new = clean_annotation(r["plot"])
+        if better(film, new, classes):
+            out[r["film_id"]] = (new, r["url"], f"Википедия: «{r['page']}»"
+                                 + (" — посерийно, сериал из отдельных историй" if r["episodes"] else ""))
+    return out, skipped_series
+
+
 def gff_suggestions(films, classes, path):
     """{film_id: (текст, url, примечание)} — описания каталога gosfilmofond.ru, которые лучше текущей аннотации.
     Совпадение: то же название (целиком или без уточнения в скобках) и год ±1; при нескольких кандидатах
@@ -196,11 +271,8 @@ def gff_suggestions(films, classes, path):
         # каталог ГФФ — кинофильмы: у телеспектакля с тем же названием это обычно другая постановка той же пьесы
         if film["kind"] == "фильм-спектакль" and "спектакл" not in (g.get("genre") or "").lower():
             continue
-        new, old = clean_annotation(g["annotation"]), film["annotation"] or ""
-        if is_truncated(new) or len(new) <= len(old) or norm(old).startswith(norm(new)):
-            continue
-        weak = is_truncated(old) or cached_plot(classes, film) is False or norm(new).startswith(norm(old).rstrip(". "))
-        if not weak and len(new) < len(old) + 40:
+        new = clean_annotation(g["annotation"])
+        if not better(film, new, classes):
             continue
         note = f"ГФФ: «{g['title']}» {g['year']}" + ("" if g["year"] == y else " — год отличается, проверить")
         out[film["film_id"]] = (new, g["url"], note)
@@ -208,16 +280,16 @@ def gff_suggestions(films, classes, path):
 
 
 MATCH_PROMPT = """Ниже пары с одинаковым названием и близким годом: аннотация из нашей базы и описание из \
-другого каталога. Для каждой пары реши, об одном ли фильме тексты.
+другого источника. Для каждой пары реши, об одном ли фильме тексты.
 
-"yes" — тексты согласуются: совпадает хоть что-то конкретное (герой, место, время, событие, литературная основа) \
-и ничто не противоречит. Разная подробность и разные слова — не противоречие.
-"no" — тексты ЯВНО противоречат: другие герои, другое время или место, другие события; либо один — концерт или \
-документальный фильм, а другой — игровой; либо это разные постановки (фильм и телеспектакль).
-"unsure" — один из текстов слишком общий или не о сюжете (тема, жанр, судьба фильма), и ни согласия, ни \
-противоречия не видно.
+"yes" — сюжеты согласуются: те же герои, место, время или события. Мелкие расхождения (другое имя у одного \
+героя, год, деталь) и разная подробность — это всё равно "yes".
+"no" — это РАЗНЫЕ сюжеты: другие герои И другие события; либо один — концерт или документальный фильм, \
+а другой — игровой; либо это разные постановки (фильм и телеспектакль).
+"unsure" — один из текстов слишком общий или не о сюжете (тема, жанр, судьба фильма), и судить нельзя.
 
-Верни СТРОГО JSON-массив без пояснений: [{{"id": <номер>, "same": "yes"|"no"|"unsure"}}, ...]
+Верни СТРОГО JSON-массив без пояснений вне него: [{{"id": <номер>, "why": "<до 15 слов>", \
+"same": "yes"|"no"|"unsure"}}, ...]
 
 {items}"""
 
@@ -265,7 +337,14 @@ def cmd_export(args):
     if args.classify and todo:
         classify(todo, classes)
     suggest, ambiguous = gff_suggestions(films, classes, args.gff) if args.gff else ({}, 0)
-    if args.gff and suggest:
+    if args.gff:
+        print(f"Каталог ГФФ: кандидатов {len(suggest)}; пропущено из-за нескольких кандидатов: {ambiguous}")
+    if args.wiki:
+        wiki, skipped_series = wiki_suggestions(films, classes, args.wiki, set(suggest))
+        print(f"Википедия: кандидатов {len(wiki)}; посерийных сюжетов сериалов со сквозным сюжетом "
+              f"(не предлагаются): {skipped_series}")
+        suggest.update(wiki)
+    if suggest:
         verdict = verify_matches({f["film_id"]: f for f in films}, suggest)
         dropped = [fid for fid, v in verdict.items() if v == "no"]
         for fid, v in verdict.items():
@@ -274,10 +353,11 @@ def cmd_export(args):
                             else (text, url, note + (" — сверка не уверена, проверить" if v == "unsure" else "")))
         print(f"Сверка моделью: тот же фильм {sum(v == 'yes' for v in verdict.values())}, "
               f"не уверена {sum(v == 'unsure' for v in verdict.values())}, другой фильм {len(dropped)}")
-    if args.gff:
-        n_year = sum(1 for v in suggest.values() if "проверить" in v[2] and v[0])
-        print(f"Предложено описаний ГФФ: {sum(1 for v in suggest.values() if v[0])} (с пометкой «проверить»: {n_year}); "
-              f"пропущено из-за нескольких кандидатов: {ambiguous}")
+    if suggest:
+        for src in ("ГФФ", "Википедия"):
+            vals = [v for v in suggest.values() if v[0] and v[2].startswith(src)]
+            print(f"Предложено: {src} — {len(vals)} (с пометкой «проверить»: "
+                  f"{sum(1 for v in vals if 'проверить' in v[2])})")
 
     rows = []
     for f in films:
@@ -420,6 +500,7 @@ def main():
                    help=f"классифицировать «сюжет / не сюжет» моделью {FLAG_MODEL} (платно, см. --estimate)")
     p.add_argument("--estimate", action="store_true", help="только оценить стоимость классификации")
     p.add_argument("--gff", help="каталог gosfilmofond.ru (imports/gff_site_catalog.jsonl.gz) — заполнить предложения")
+    p.add_argument("--wiki", help="сюжеты Википедии (imports/wiki_plots.jsonl.gz) — где нет предложения ГФФ")
     p = sub.add_parser("apply", help="заполненный xlsx → JSON-правки для film_search.py import")
     p.add_argument("xlsx", nargs="+")
     p.add_argument("--out", required=True)

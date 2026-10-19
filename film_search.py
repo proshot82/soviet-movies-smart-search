@@ -760,7 +760,13 @@ def _film_dict(row, **extra):
     return {"film_id": film_id, "title": title or "", "genre": genre or "",
             "year": year, "studio": studio or "", "director": director or "",
             "annotation": ann or "", "cast": cast_t or "",
-            "source": src if (src or "").startswith(("http://", "https://")) else "", **extra}
+            "source": source_url(src), **extra}
+
+
+def source_url(src):
+    """Первый URL в films.source («список.xlsx; https://animator.ru/…») или пустая строка."""
+    m = re.search(r"https?://\S+", src or "")
+    return m.group(0).rstrip(";,") if m else ""
 
 
 # ─── FTS search ─────────────────────────────────────────────────────

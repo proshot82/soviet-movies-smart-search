@@ -6,7 +6,8 @@
     python tools/wiki_plots.py --ids 8327 8463          # только эти фильмы
 
 Шаг 1 — поиск статьи: для каждого фильма проверяются названия «Х (фильм, Г)», «Х (телефильм)», «Х (телесериал)»,
-«Х (фильм-спектакль)», «Х (мультфильм)», «Х (фильм)», «Х» — пачками по 50 через API (prop=categories). Статья
+«Х (телеспектакль)», «Х (мультфильм)», «Х (фильм)», «Х» — набор зависит от типа фильма (SUFFIXES); по 10 фильмов
+(≤ 50 названий) в запросе к API (prop=categories). Статья
 подходит, если среди её категорий есть категория с годом фильма (±1) и словом «СССР» / «советск» —
 так «Х» о книге или городе не принимается. Шаг 2 — викитекст выбранных статей (пачками по 50),
 из него раздел «Сюжет» без разметки, сносок и шаблонов.
@@ -37,8 +38,13 @@ API = "https://ru.wikipedia.org/w/api.php"
 UA = "SovietMoviesSearch/0.1 (https://github.com/proshot82/soviet-movies-smart-search) python-urllib"
 FIRST_OPEN_ID = 7175
 BATCH = 50
-SUFFIXES = ["фильм, {year}", "телефильм", "телесериал", "фильм-спектакль", "телеспектакль", "мультфильм, {year}",
-            "мультфильм", "фильм", None]
+# Варианты названия статьи по типу фильма (меньше вариантов — больше фильмов в одном запросе к API)
+SUFFIXES = {
+    "телефильм": ["фильм, {year}", "телефильм", "телесериал", "фильм", None],
+    "фильм-спектакль": ["телеспектакль", "фильм-спектакль", "фильм, {year}", "фильм", None],
+    "мультфильм": ["мультфильм, {year}", "мультфильм", "фильм", None],
+}
+SUFFIXES_DEFAULT = ["фильм, {year}", "фильм", "телефильм", None]
 PLOT_HEADINGS = re.compile(r"^(сюжет|сюжет фильма|содержание|синопсис)$", re.I)
 
 
@@ -59,10 +65,10 @@ def api(params, tries=30):
     raise SystemExit("API Википедии не отвечает — перезапустите позже, докачка продолжится")
 
 
-def candidates(title, year):
+def candidates(title, year, kind=None):
     base = re.sub(r"\s+", " ", title).strip()
     out = []
-    for s in SUFFIXES:
+    for s in SUFFIXES.get(kind, SUFFIXES_DEFAULT):
         t = base if s is None else f"{base} ({s.format(year=year)})"
         if t not in out:
             out.append(t)
@@ -165,7 +171,7 @@ def main():
     args = ap.parse_args()
 
     conn = sqlite3.connect(f"file:{args.db}?mode=ro", uri=True)
-    films = conn.execute("SELECT film_id, title, year FROM films WHERE film_id >= ? ORDER BY film_id",
+    films = conn.execute("SELECT film_id, title, year, kind FROM films WHERE film_id >= ? ORDER BY film_id",
                          (FIRST_OPEN_ID,)).fetchall()
     conn.close()
     if args.ids:
@@ -179,10 +185,10 @@ def main():
     print(f"Фильмов: {len(films)} (уже обработано: {len(done)})")
 
     # Шаг 1: какие названия существуют и подходят по категориям. Пачки — по фильмам, чтобы докачка шла по фильмам.
-    per_batch = max(1, BATCH // len(SUFFIXES))
+    per_batch = 10
     for start in range(0, len(films), per_batch):
-        chunk = films[start:start + per_batch]
-        want = {fid: candidates(t, y) for fid, t, y in chunk}
+        chunk = [(fid, t, y) for fid, t, y, _ in films[start:start + per_batch]]
+        want = {fid: candidates(t, y, k) for fid, t, y, k in films[start:start + per_batch]}
         titles = sorted({t for c in want.values() for t in c})
         d = api({"action": "query", "titles": "|".join(titles), "redirects": 1, "prop": "categories",
                  "cllimit": "max", "clshow": "!hidden"})
