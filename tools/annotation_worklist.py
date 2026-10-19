@@ -44,6 +44,7 @@ from film_search import DB_PATH, get_openai_client  # noqa: E402
 FIRST_OPEN_ID = 7175        # film_id 1–7174 — каталоги ГФФ, аннотации не трогаем (PLAN.md, раздел 2)
 SHORT_CHARS = 300
 CLASSES_PATH = ROOT / "imports" / "аннотации_классы.json"
+MATCHES_PATH = ROOT / "imports" / "аннотации_сверка.json"     # «тот же фильм?» по парам (film_id, текст источника)
 
 # Проба на 50 + 8 трудных аннотациях 19.10.2026: gpt-5.4-nano и с "none", и с "low" считал сюжетом
 # «Семнадцать мгновений весны» (8327: только время действия и слава фильма), gpt-5.4-mini — нет
@@ -171,7 +172,8 @@ def classify(films, classes):
 def gff_suggestions(films, classes, path):
     """{film_id: (текст, url, примечание)} — описания каталога gosfilmofond.ru, которые лучше текущей аннотации.
     Совпадение: то же название (целиком или без уточнения в скобках) и год ±1; при нескольких кандидатах
-    берётся единственный с точным годом, иначе фильм пропускается."""
+    берётся единственный с точным годом, иначе фильм пропускается. Телеспектаклю описание кинофильма не
+    предлагается. Новый текст должен быть длиннее старого (а если старый не обрыв и не «не сюжет» — на 40+ символов)."""
     from xlsx_to_json import norm, title_keys
     index = {}
     with gzip.open(path, "rt", encoding="utf-8") as f:
@@ -191,8 +193,11 @@ def gff_suggestions(films, classes, path):
             ambiguous += len(pick) > 1
             continue
         g = pick[0]
+        # каталог ГФФ — кинофильмы: у телеспектакля с тем же названием это обычно другая постановка той же пьесы
+        if film["kind"] == "фильм-спектакль" and "спектакл" not in (g.get("genre") or "").lower():
+            continue
         new, old = clean_annotation(g["annotation"]), film["annotation"] or ""
-        if is_truncated(new) or norm(new) == norm(old) or norm(old).startswith(norm(new)):
+        if is_truncated(new) or len(new) <= len(old) or norm(old).startswith(norm(new)):
             continue
         weak = is_truncated(old) or cached_plot(classes, film) is False or norm(new).startswith(norm(old).rstrip(". "))
         if not weak and len(new) < len(old) + 40:
@@ -200,6 +205,51 @@ def gff_suggestions(films, classes, path):
         note = f"ГФФ: «{g['title']}» {g['year']}" + ("" if g["year"] == y else " — год отличается, проверить")
         out[film["film_id"]] = (new, g["url"], note)
     return out, ambiguous
+
+
+MATCH_PROMPT = """Ниже пары с одинаковым названием и близким годом: аннотация из нашей базы и описание из \
+другого каталога. Для каждой пары реши, об одном ли фильме тексты.
+
+"yes" — тексты согласуются: совпадает хоть что-то конкретное (герой, место, время, событие, литературная основа) \
+и ничто не противоречит. Разная подробность и разные слова — не противоречие.
+"no" — тексты ЯВНО противоречат: другие герои, другое время или место, другие события; либо один — концерт или \
+документальный фильм, а другой — игровой; либо это разные постановки (фильм и телеспектакль).
+"unsure" — один из текстов слишком общий или не о сюжете (тема, жанр, судьба фильма), и ни согласия, ни \
+противоречия не видно.
+
+Верни СТРОГО JSON-массив без пояснений: [{{"id": <номер>, "same": "yes"|"no"|"unsure"}}, ...]
+
+{items}"""
+
+
+def verify_matches(films_by_id, suggest):
+    """Сверка предложений моделью FLAG_MODEL: {film_id: "yes"|"no"|"unsure"}; кеш — MATCHES_PATH."""
+    cache = json.loads(MATCHES_PATH.read_text(encoding="utf-8")) if MATCHES_PATH.exists() else {}
+    key = lambda fid: f"{fid}:{ann_hash(films_by_id[fid]['annotation'])}:{ann_hash(suggest[fid][0])}"
+    todo = [fid for fid in suggest if key(fid) not in cache]
+    if todo:
+        client = get_openai_client()
+        for start in range(0, len(todo), 15):
+            batch = todo[start:start + 15]
+            items = "\n\n".join(
+                f"[{fid}] «{films_by_id[fid]['title']}» ({films_by_id[fid]['year']}, {films_by_id[fid]['kind']}"
+                f"{', ' + films_by_id[fid]['studio'] if films_by_id[fid]['studio'] else ''})\n"
+                f"НАША: {(films_by_id[fid]['annotation'] or '(нет)')[:FLAG_CLIP]}\n"
+                f"ДРУГАЯ ({suggest[fid][2]}): {suggest[fid][0][:FLAG_CLIP]}" for fid in batch)
+            for attempt in range(3):
+                try:
+                    resp = client.chat.completions.create(
+                        model=FLAG_MODEL, messages=[{"role": "user", "content": MATCH_PROMPT.format(items=items)}],
+                        reasoning_effort=FLAG_EFFORT, max_completion_tokens=8000)
+                    text = resp.choices[0].message.content.strip().replace("```json", "").replace("```", "")
+                    for it in json.loads(text):
+                        if int(it["id"]) in batch and it.get("same") in ("yes", "no", "unsure"):
+                            cache[key(int(it["id"]))] = it["same"]
+                    break
+                except Exception as e:      # сбой сети или формата ответа — повтор
+                    print(f"  сверка: {e}", file=sys.stderr)
+            MATCHES_PATH.write_text(json.dumps(cache, ensure_ascii=False, indent=0), encoding="utf-8")
+    return {fid: cache.get(key(fid), "unsure") for fid in suggest}
 
 
 def cmd_export(args):
@@ -215,9 +265,18 @@ def cmd_export(args):
     if args.classify and todo:
         classify(todo, classes)
     suggest, ambiguous = gff_suggestions(films, classes, args.gff) if args.gff else ({}, 0)
+    if args.gff and suggest:
+        verdict = verify_matches({f["film_id"]: f for f in films}, suggest)
+        dropped = [fid for fid, v in verdict.items() if v == "no"]
+        for fid, v in verdict.items():
+            text, url, note = suggest[fid]
+            suggest[fid] = ((None, None, note + " — по сверке другой фильм, не предложено") if v == "no"
+                            else (text, url, note + (" — сверка не уверена, проверить" if v == "unsure" else "")))
+        print(f"Сверка моделью: тот же фильм {sum(v == 'yes' for v in verdict.values())}, "
+              f"не уверена {sum(v == 'unsure' for v in verdict.values())}, другой фильм {len(dropped)}")
     if args.gff:
-        n_year = sum(1 for v in suggest.values() if "проверить" in v[2])
-        print(f"Предложено описаний ГФФ: {len(suggest)} (из них год ±1: {n_year}); "
+        n_year = sum(1 for v in suggest.values() if "проверить" in v[2] and v[0])
+        print(f"Предложено описаний ГФФ: {sum(1 for v in suggest.values() if v[0])} (с пометкой «проверить»: {n_year}); "
               f"пропущено из-за нескольких кандидатов: {ambiguous}")
 
     rows = []
