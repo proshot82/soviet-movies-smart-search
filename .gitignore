@@ -16,3 +16,7 @@ venv/
 ~$*
 Thumbs.db
 desktop.ini
+
+# Служебные файлы SQLite (появляются, пока база открыта)
+*.db-wal
+*.db-shm

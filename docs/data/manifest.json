@@ -1,0 +1,29 @@
+{
+ "built_at": "2026-10-19 16:04:53",
+ "films": 11394,
+ "chunks": 54005,
+ "year_min": 1918,
+ "year_max": 1991,
+ "embedding_model": "text-embedding-3-large",
+ "dims": 1024,
+ "quant": "int4",
+ "rerank_model": "gpt-5.5",
+ "files": {
+  "films": {
+   "file": "films.b0dc746002.json.gz",
+   "bytes": 4269286
+  },
+  "fts": {
+   "file": "fts.6a3b8314cb.json.gz",
+   "bytes": 2182656
+  },
+  "lemmas": {
+   "file": "lemmas.a40836bb89.txt.gz",
+   "bytes": 2467101
+  },
+  "vectors": {
+   "file": "vectors.3f86531307.bin.gz",
+   "bytes": 21779966
+  }
+ }
+}
