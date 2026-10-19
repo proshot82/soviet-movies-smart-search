@@ -96,7 +96,7 @@ def get_openai_client():
         for name in ("openai_key.txt", ".openai_key"):
             p = Path(__file__).parent / name
             if p.exists():
-                key = p.read_text().strip()
+                key = p.read_text(encoding='utf-8-sig').strip()   # UTF-8 с BOM из Блокнота тоже
                 break
     if not key:
         print("Установите OPENAI_API_KEY или создайте openai_key.txt", file=sys.stderr)
@@ -233,22 +233,28 @@ def build_fts(conn):
     """(Пере)собрать лемматизированный FTS-индекс из таблицы films.
     Сносит старый films_fts и его триггеры (миграция со старой схемы),
     создаёт standalone FTS5 по леммам и заполняет. Эмбеддинги не трогает."""
-    conn.executescript("""
-        DROP TRIGGER IF EXISTS films_ai;
-        DROP TRIGGER IF EXISTS films_ad;
-        DROP TRIGGER IF EXISTS films_au;
-        DROP TABLE IF EXISTS films_fts;
-        CREATE VIRTUAL TABLE films_fts USING fts5(lemmas);
-    """)
+    # Леммы считаются до начала транзакции (это самая долгая часть), а снос старого индекса и запись
+    # нового идут одной транзакцией: если окно закроют посреди пересборки, остаётся прежний индекс,
+    # а не пустой (executescript фиксировал DROP/CREATE сразу, отдельно от заполнения).
     rows = conn.execute("SELECT film_id, title, annotation FROM films").fetchall()
-    for film_id, title, annotation in rows:
-        text = ((title or "") + " " + (annotation or "")).strip()
-        conn.execute("INSERT INTO films_fts(rowid, lemmas) VALUES (?, ?)",
-                     (film_id, lemmatize_text(text)))
+    lemmas = [(film_id, lemmatize_text(((title or "") + " " + (annotation or "")).strip()))
+              for film_id, title, annotation in rows]
     mode = 'lemmas' if _get_morph() is not None else 'lower'
-    _meta_set(conn, 'fts_mode', mode)
-    _meta_set(conn, 'fts_built_at', time.strftime('%Y-%m-%d %H:%M:%S'))
-    conn.commit()
+    if conn.in_transaction:
+        conn.commit()
+    conn.execute("BEGIN")
+    try:
+        for stmt in ("DROP TRIGGER IF EXISTS films_ai", "DROP TRIGGER IF EXISTS films_ad",
+                     "DROP TRIGGER IF EXISTS films_au", "DROP TABLE IF EXISTS films_fts",
+                     "CREATE VIRTUAL TABLE films_fts USING fts5(lemmas)"):
+            conn.execute(stmt)
+        conn.executemany("INSERT INTO films_fts(rowid, lemmas) VALUES (?, ?)", lemmas)
+        _meta_set(conn, 'fts_mode', mode)
+        _meta_set(conn, 'fts_built_at', time.strftime('%Y-%m-%d %H:%M:%S'))
+        conn.commit()
+    except BaseException:
+        conn.rollback()
+        raise
     if mode == 'lemmas':
         log.info(f"FTS-индекс по леммам построен: {len(rows)} фильмов")
     else:
@@ -268,6 +274,11 @@ def _fts_mode(conn):
         return 'old'
     if 'lemmas' not in cols:
         return 'old'
+    # Индекс должен покрывать все фильмы: пустой или неполный (прерванная сборка, фильмы добавлены
+    # в обход import) — устарел, иначе поиск по словам молча не находит часть каталога
+    n_films = conn.execute("SELECT COUNT(*) FROM films").fetchone()[0]
+    if conn.execute("SELECT COUNT(*) FROM films_fts").fetchone()[0] != n_films:
+        return 'stale'
     recorded = _meta_get(conn, 'fts_mode')
     rows = conn.execute("""SELECT f.film_id, f.title, f.annotation, x.lemmas FROM films f
                            JOIN films_fts x ON x.rowid = f.film_id
@@ -444,6 +455,13 @@ def cmd_embed(args):
             done_ids = set(r[0] for r in conn.execute("SELECT chunk_id FROM embeddings").fetchall())
             log.info(f"Resuming: {len(done_ids)} already embedded")
         else:
+            # Полная пересборка стирает все эмбеддинги — сначала убеждаемся, что API отвечает
+            # (ключ, сеть, модель), иначе база осталась бы без смыслового поиска
+            try:
+                client.embeddings.create(model=EMBEDDING_MODEL, input=["проверка"], dimensions=DIMENSIONS)
+            except Exception as e:
+                log.error(f"API эмбеддингов недоступен ({e}) — существующие эмбеддинги не тронуты")
+                sys.exit(1)
             conn.execute("DELETE FROM embeddings")
             conn.commit()
             done_ids = set()
@@ -468,13 +486,12 @@ def cmd_embed(args):
             batch_ids = [cid for cid, _ in batch]
             batch_texts = [text for _, text in batch]
             
-            tokens = _embed_batch(client, conn, batch_ids, batch_texts, commit=False)
-            if tokens > 0:
-                total_tokens += tokens
-                embedded += len(batch_ids)
+            tokens, stored = _embed_batch(client, conn, batch_ids, batch_texts, commit=False)
+            total_tokens += tokens
+            embedded += stored
+            skipped += len(batch_ids) - stored
+            if stored:
                 uncommitted += 1
-            else:
-                skipped += len(batch_ids)
             
             if uncommitted >= 10:
                 conn.commit()
@@ -495,11 +512,17 @@ def cmd_embed(args):
         cost = total_tokens / 1_000_000 * 0.13
         log.info(f"Estimated cost: ${cost:.4f}")
     finally:
+        if conn.in_transaction:
+            conn.commit()   # готовые батчи сохраняются и при остановке (Ctrl+C, отказ ключа) — их подхватит --resume
         conn.close()
 
 
 def _embed_batch(client, conn, ids, texts, commit=True):
-    """Call OpenAI API, store BLOBs, return token count."""
+    """Call OpenAI API, store BLOBs. Возвращает (токены, сколько чанков сохранено).
+
+    Повторяет только то, что лечится ожиданием: лимит запросов (429), сбой сервера (5xx), сеть.
+    Отказ ключа (401/403) прерывает всю генерацию; ошибка в самом запросе (400/404/422 — модель,
+    размерность, текст) сразу пропускает батч — ждать её бессмысленно."""
     for attempt in range(5):
         try:
             response = client.embeddings.create(
@@ -509,28 +532,34 @@ def _embed_batch(client, conn, ids, texts, commit=True):
             )
             break
         except Exception as e:
+            status = getattr(e, 'status_code', None)
+            if status in (401, 403):
+                raise
+            if status is not None and 400 <= status < 500 and status != 429:
+                log.error(f"Батч из {len(ids)} чанков отклонён ({e}) — пропускаю")
+                return 0, 0
             wait = 10 * (attempt + 1)
             log.warning(f"API error ({attempt+1}/5): {e} — waiting {wait}s")
             time.sleep(wait)
     else:
         log.error(f"Failed batch of {len(ids)} after 5 retries")
-        return 0
+        return 0, 0
     
     tokens = response.usage.total_tokens
-    all_vecs = np.array([item.embedding for item in response.data], dtype=np.float32)
+    # Вектор привязывается к своему входу по полю index, а не по порядку в ответе
+    vec_by_pos = {item.index: item.embedding for item in response.data}
+    if len(vec_by_pos) != len(ids):
+        log.warning(f"API returned {len(vec_by_pos)} embeddings for {len(ids)} inputs")
     
-    n = min(len(ids), len(all_vecs))
-    if n != len(ids):
-        log.warning(f"API returned {len(all_vecs)} embeddings for {len(ids)} inputs")
-    
-    rows = [(ids[i], EMBEDDING_MODEL, all_vecs[i].tobytes()) for i in range(n)]
+    rows = [(ids[i], EMBEDDING_MODEL, np.asarray(vec_by_pos[i], dtype=np.float32).tobytes())
+            for i in range(len(ids)) if i in vec_by_pos]
     conn.executemany(
         "INSERT OR REPLACE INTO embeddings (chunk_id, model, embedding) VALUES (?,?,?)",
         rows,
     )
     if commit:
         conn.commit()
-    return tokens
+    return tokens, len(rows)
 
 
 # ─── Index loading (cached) ────────────────────────────────────────
@@ -610,6 +639,41 @@ def _build_film_index(chunk_ids, chunk_to_film):
     _cached_idx_to_fid = unique_fids
 
 
+# ─── Фильтры и строки результатов (общие для обоих каналов) ─────────
+
+RRF_K = 60  # константа слияния Reciprocal Rank Fusion (hybrid_search, fallback_order)
+_FILM_COLS = "film_id, title, genre, year, studio, director, annotation, cast_text"
+
+
+def _like_escape(s):
+    """Подстрока для LIKE … ESCAPE '\\': символы % и _ из ввода ищутся буквально, а не как шаблоны."""
+    return s.replace('\\', '\\\\').replace('%', '\\%').replace('_', '\\_')
+
+
+def _filter_sql(year=None, studio=None, genre=None, alias=""):
+    """Условия фильтров (десятилетие, подстрока студии и жанра без учёта регистра) → (список SQL, параметры)."""
+    parts, params = [], []
+    if year:
+        decade = (year // 10) * 10
+        parts.append(f"{alias}year BETWEEN ? AND ?")
+        params.extend([decade, decade + 9])
+    if studio:
+        parts.append(f"lc({alias}studio) LIKE ? ESCAPE '\\'")
+        params.append(f"%{_like_escape(studio.lower())}%")
+    if genre:
+        parts.append(f"lc({alias}genre) LIKE ? ESCAPE '\\'")
+        params.append(f"%{_like_escape(genre.lower())}%")
+    return parts, params
+
+
+def _film_dict(row, **extra):
+    """Строка (_FILM_COLS) → словарь результата поиска."""
+    film_id, title, genre, year, studio, director, ann, cast_t = row
+    return {"film_id": film_id, "title": title or "", "genre": genre or "",
+            "year": year, "studio": studio or "", "director": director or "",
+            "annotation": ann or "", "cast": cast_t or "", **extra}
+
+
 # ─── FTS search ─────────────────────────────────────────────────────
 
 def fts_search(conn, query, limit=20, year=None, studio=None, genre=None):
@@ -625,23 +689,11 @@ def fts_search(conn, query, limit=20, year=None, studio=None, genre=None):
         return []
     
     # Build filter clauses (reused for both tiers)
-    where_parts = []
-    filter_params = []
-    if year:
-        where_parts.append("f.year BETWEEN ? AND ?")
-        decade = (year // 10) * 10
-        filter_params.extend([decade, decade + 9])
-    if studio:
-        where_parts.append("lc(f.studio) LIKE ?")
-        filter_params.append(f"%{studio.lower()}%")
-    if genre:
-        where_parts.append("lc(f.genre) LIKE ?")
-        filter_params.append(f"%{genre.lower()}%")
+    where_parts, filter_params = _filter_sql(year, studio, genre, alias="f.")
     filter_sql = (" AND " + " AND ".join(where_parts)) if where_parts else ""
     
     sql_template = f"""
-        SELECT f.film_id, f.title, f.genre, f.year, f.studio, f.director,
-               f.annotation, f.cast_text, rank
+        SELECT {", ".join("f." + c for c in _FILM_COLS.split(", "))}, rank
         FROM films_fts fts
         JOIN films f ON f.film_id = fts.rowid
         WHERE films_fts MATCH ?{{filter}}
@@ -658,14 +710,7 @@ def fts_search(conn, query, limit=20, year=None, studio=None, genre=None):
             return []
     
     def _to_results(rows):
-        out = []
-        for film_id, title, genre_v, year_v, studio_v, director, ann, cast_t, rank in rows:
-            out.append({
-                "film_id": film_id, "title": title or "", "genre": genre_v or "",
-                "year": year_v, "studio": studio_v or "", "director": director or "",
-                "annotation": ann or "", "cast": cast_t or "", "score": -rank,
-            })
-        return out
+        return [_film_dict(r[:-1], score=-r[-1]) for r in rows]
     
     # Tier 1: AND (implicit) — high precision, all terms must match
     if len(tokens) >= 2:
@@ -736,27 +781,12 @@ def semantic_search(conn, query_vecs, limit=20, year=None, studio=None, genre=No
         np.maximum.at(best_film_scores, film_ids_arr, scores)
     
     # Collect film_id → score for films above threshold
-    film_scores = {}
-    for film_idx in range(n_films):
-        s = float(best_film_scores[film_idx])
-        if s > 0:
-            film_scores[idx_to_fid[film_idx]] = s
+    above = np.nonzero(best_film_scores > 0)[0]
+    film_scores = {idx_to_fid[i]: float(best_film_scores[i]) for i in above}
     
-    # Apply filters
-    if (year or studio or genre) and film_scores:
-        where_parts = ["film_id IN ({})".format(",".join("?" * len(film_scores)))]
-        params = list(film_scores.keys())
-        if year:
-            decade = (year // 10) * 10
-            where_parts.append("year BETWEEN ? AND ?")
-            params.extend([decade, decade + 9])
-        if studio:
-            where_parts.append("lc(studio) LIKE ?")
-            params.append(f"%{studio.lower()}%")
-        if genre:
-            where_parts.append("lc(genre) LIKE ?")
-            params.append(f"%{genre.lower()}%")
-        
+    # Apply filters: фильтр по всей таблице films, без списка id в запросе (до ~7 тыс. параметров)
+    where_parts, params = _filter_sql(year, studio, genre)
+    if where_parts and film_scores:
         valid_ids = set(r[0] for r in conn.execute(
             f"SELECT film_id FROM films WHERE {' AND '.join(where_parts)}", params
         ).fetchall())
@@ -770,23 +800,11 @@ def semantic_search(conn, query_vecs, limit=20, year=None, studio=None, genre=No
     # Fetch metadata
     fids = [fid for fid, _ in sorted_films]
     ph = ",".join("?" * len(fids))
-    meta_rows = conn.execute(
-        f"SELECT film_id, title, genre, year, studio, director, annotation, cast_text "
-        f"FROM films WHERE film_id IN ({ph})", fids
-    ).fetchall()
+    meta_rows = conn.execute(f"SELECT {_FILM_COLS} FROM films WHERE film_id IN ({ph})", fids).fetchall()
     meta = {r[0]: r for r in meta_rows}
     
-    results = []
-    for film_id, score in sorted_films:
-        m = meta.get(film_id)
-        if m:
-            results.append({
-                "film_id": m[0], "title": m[1] or "", "genre": m[2] or "",
-                "year": m[3], "studio": m[4] or "", "director": m[5] or "",
-                "annotation": m[6] or "", "cast": m[7] or "",
-                "score": score, "sem_score": score,
-            })
-    return results
+    return [_film_dict(meta[film_id], score=score, sem_score=score)
+            for film_id, score in sorted_films if film_id in meta]
 
 
 # ─── Query expansion ───────────────────────────────────────────────
@@ -880,7 +898,7 @@ def hybrid_search(conn, client, query, limit=50, expand=True,
     # RRF fusion
     rrf_scores = {}
     fts_rank_of, sem_rank_of = {}, {}
-    k = 60
+    k = RRF_K
     for rank, r in enumerate(fts_results):
         fid = r["film_id"]
         rrf_scores[fid] = rrf_scores.get(fid, 0) + fts_weight / (k + rank + 1)
@@ -930,7 +948,7 @@ def fallback_order(candidates):
     в каналах (fts_rank / sem_rank из hybrid_search). Используется, когда реранкер недоступен.
     Кандидаты без рангов (чистая семантика) остаются в исходном порядке."""
     w_fts, w_sem = fusion_weights(False)
-    k = 60
+    k = RRF_K
     def score(c):
         fr, sr = c.get('fts_rank'), c.get('sem_rank')
         if not fr and not sr:
@@ -1008,7 +1026,11 @@ def rerank(client, query, candidates, top_k=TOP_RESULTS, effort="none"):
             text = response.choices[0].message.content.strip()
             text = text.replace('```json', '').replace('```', '').strip()
             items = json.loads(text)
-            
+            if not isinstance(items, list):
+                # например {"results": [...]} — это сбой формата, а не «ничего не подходит»:
+                # повтор, а после трёх попыток — порядок без реранкера (fallback_order)
+                raise ValueError(f"ответ не JSON-массив: {text[:80]!r}")
+
             reranked = []
             seen = set()
             VALID = {"наиболее вероятно", "возможно", "маловероятно"}
@@ -1572,6 +1594,20 @@ function esc(s) { const d = document.createElement('div'); d.textContent = s; re
 </html>"""
 
 
+def _flag(value, default):
+    """Флаг из JSON: true/false, 1/0 или строки «true»/«false» («false» — это False, а не непустая строка)."""
+    if value is None:
+        return default
+    if isinstance(value, str):
+        v = value.strip().lower()
+        if v in ('true', '1', 'yes', 'on'):
+            return True
+        if v in ('false', '0', 'no', 'off', ''):
+            return False
+        return default
+    return bool(value)
+
+
 def cmd_serve(args):
     """Запустить веб-интерфейс."""
     try:
@@ -1616,18 +1652,24 @@ def cmd_serve(args):
 
     @app.route('/search', methods=['POST'])
     def api_search():
-        data = flask_request.get_json(silent=True) or {}
-        query = data.get('query', '').strip()
+        # Тело запроса проверяется по типам: [] или {"query": 123} — это пустой ответ, а не ошибка 500
+        data = flask_request.get_json(silent=True)
+        if not isinstance(data, dict):
+            data = {}
+        query = data.get('query')
+        query = query.strip() if isinstance(query, str) else ''
         if not query:
             return jsonify({'results': [], 'variants': []})
 
         # Интерфейс работает в одном режиме: слова + смысл → реранкер. Параметры ниже интерфейс
         # не передаёт; они приняты только для скриптов и отладки (bench_search.py, curl).
-        do_expand = bool(data.get('expand', EXPAND_DEFAULT))
+        do_expand = _flag(data.get('expand'), EXPAND_DEFAULT)
         rerank_mode = data.get('rerank_mode', 'fast')   # 'fast' | 'thinking' | 'off'
+        if rerank_mode not in ('fast', 'thinking', 'off'):
+            rerank_mode = 'fast'
         do_rerank = rerank_mode != 'off'
         rerank_effort = 'medium' if rerank_mode == 'thinking' else 'none'
-        do_fts = data.get('fts', True)
+        do_fts = _flag(data.get('fts'), True)
 
         # Sanitize filter params
         year = data.get('year')
@@ -1636,8 +1678,9 @@ def cmd_serve(args):
                 year = int(year)
             except (ValueError, TypeError):
                 year = None
-        studio = data.get('studio') or None
-        genre = data.get('genre') or None
+        studio = data.get('studio') if isinstance(data.get('studio'), str) else None
+        genre = data.get('genre') if isinstance(data.get('genre'), str) else None
+        studio, genre = (studio or '').strip() or None, (genre or '').strip() or None
         
         # Per-request connection (thread-safe, no schema — already created at startup)
         conn = open_db(db_path, schema=False)
