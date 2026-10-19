@@ -42,7 +42,7 @@ SUFFIXES = ["фильм, {year}", "телефильм", "телесериал", 
 PLOT_HEADINGS = re.compile(r"^(сюжет|сюжет фильма|содержание|синопсис)$", re.I)
 
 
-def api(params, tries=8):
+def api(params, tries=30):
     data = urllib.parse.urlencode(dict(params, format="json", formatversion=2)).encode()
     for attempt in range(tries):
         try:
@@ -51,7 +51,8 @@ def api(params, tries=8):
         except urllib.error.HTTPError as e:
             if e.code not in (429, 500, 502, 503, 504):
                 raise
-            wait = int(e.headers.get("Retry-After") or 5 * 2 ** attempt) + 1
+            # Retry-After бывает 1 с при длящемся 429 (общий облачный адрес) — ждём не меньше растущей паузы
+            wait = max(int(e.headers.get("Retry-After") or 0) + 1, 5 * 2 ** min(attempt, 6))
         except (urllib.error.URLError, TimeoutError):
             wait = 5 * 2 ** attempt
         time.sleep(min(wait, 300))
@@ -220,7 +221,7 @@ def main():
         n = start + len(chunk)
         if n % 300 < per_batch or n == len(films):
             print(f"  {n}/{len(films)}")
-        time.sleep(1)
+        time.sleep(3)
     print(f"Файл: {out}")
 
 
