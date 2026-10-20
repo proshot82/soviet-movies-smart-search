@@ -71,7 +71,11 @@
   "note": null,
   "title_in_query": false,
   "also_ok": [
-   3482
+   {
+    "title": "Обыкновенное чудо",
+    "year": 1964,
+    "catalog_id": 3482
+   }
   ]
  },
  {
@@ -302,7 +306,11 @@
   "note": null,
   "title_in_query": false,
   "also_ok": [
-   3482
+   {
+    "title": "Обыкновенное чудо",
+    "year": 1964,
+    "catalog_id": 3482
+   }
   ]
  },
  {
@@ -329,7 +337,11 @@
   "note": null,
   "title_in_query": false,
   "also_ok": [
-   4466
+   {
+    "title": "Двенадцать стульев",
+    "year": 1971,
+    "catalog_id": 4466
+   }
   ]
  },
  {
@@ -380,7 +392,11 @@
   "note": null,
   "title_in_query": false,
   "also_ok": [
-   5636
+   {
+    "title": "Старомодная комедия",
+    "year": 1978,
+    "catalog_id": 5636
+   }
   ]
  },
  {
@@ -599,7 +615,11 @@
   "note": null,
   "title_in_query": false,
   "also_ok": [
-   5587
+   {
+    "title": "Новые приключения капитана Врунгеля",
+    "year": 1978,
+    "catalog_id": 5587
+   }
   ]
  },
  {
@@ -722,8 +742,16 @@
   "note": null,
   "title_in_query": false,
   "also_ok": [
-   14242,
-   14448
+   {
+    "title": "Фантадром 3. Огонь",
+    "year": 1986,
+    "catalog_id": 14242
+   },
+   {
+    "title": "Фантадром-3. Пожар",
+    "year": 1986,
+    "catalog_id": 14448
+   }
   ]
  },
  {
