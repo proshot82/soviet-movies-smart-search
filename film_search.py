@@ -1898,6 +1898,38 @@ def cmd_reindex_fts(args):
         conn.close()
 
 
+# ─── Delete ─────────────────────────────────────────────────────────
+
+def cmd_delete(args):
+    """Удалить фильмы (вместе с чанками и эмбеддингами) — например, иностранные записи, попавшие в базу по ошибке.
+    Фильмы каталогов ГФФ (film_id < 7175) не удаляются."""
+    conn = open_db(args.db)
+    try:
+        rows = conn.execute(f"SELECT film_id, title, year, kind, country FROM films WHERE film_id IN "
+                            f"({','.join('?' * len(args.ids))}) ORDER BY film_id", args.ids).fetchall()
+        missing = sorted(set(args.ids) - {r[0] for r in rows})
+        if missing:
+            print(f"film_id нет в базе: {missing}", file=sys.stderr)
+        closed = [r for r in rows if r[0] < 7175]
+        if closed:
+            print(f"Фильмы каталогов ГФФ (film_id < 7175) не удаляются: {[r[0] for r in closed]}", file=sys.stderr)
+            sys.exit(1)
+        for fid, title, year, kind, country in rows:
+            print(f"  {fid}  {title} ({year}, {kind}, {country or '—'})")
+        if args.dry_run:
+            print(f"--dry-run: к удалению {len(rows)}, ничего не удалено")
+            return
+        for fid, *_ in rows:
+            conn.execute("DELETE FROM embeddings WHERE chunk_id IN (SELECT chunk_id FROM chunks WHERE film_id = ?)", (fid,))
+            conn.execute("DELETE FROM chunks WHERE film_id = ?", (fid,))
+            conn.execute("DELETE FROM films WHERE film_id = ?", (fid,))
+        conn.commit()
+        build_fts(conn)
+        print(f"Удалено фильмов: {len(rows)}; FTS-индекс пересобран")
+    finally:
+        conn.close()
+
+
 # ─── Main ───────────────────────────────────────────────────────────
 
 def main():
@@ -1934,6 +1966,9 @@ def main():
     sub.add_parser('stats', help='Статистика базы')
     p_reindex = sub.add_parser('reindex-fts', help='Пересобрать лемматизированный FTS-индекс (без re-embed)')
     p_reindex.add_argument('--force', action='store_true', help='Собрать даже без pymorphy3 (по словоформам)')
+    p_delete = sub.add_parser('delete', help='Удалить фильмы по film_id (только film_id >= 7175)')
+    p_delete.add_argument('ids', nargs='+', type=int)
+    p_delete.add_argument('--dry-run', action='store_true')
     
     args = parser.parse_args()
     
@@ -1949,6 +1984,8 @@ def main():
         cmd_stats(args)
     elif args.cmd == 'reindex-fts':
         cmd_reindex_fts(args)
+    elif args.cmd == 'delete':
+        cmd_delete(args)
     else:
         parser.print_help()
 
