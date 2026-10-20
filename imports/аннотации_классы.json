@@ -1002,9 +1002,9 @@
 "model": "gpt-5.4-mini"
 },
 "7342": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "b60f4c80e0c6a953",
+"hash": "8121933a0665b096",
 "model": "gpt-5.4-mini"
 },
 "7343": {
@@ -1142,7 +1142,7 @@
 "7365": {
 "level": "full",
 "plot": true,
-"hash": "2bea513245fe3a39",
+"hash": "30e5f11a09c12cc4",
 "model": "gpt-5.4-mini"
 },
 "7366": {
@@ -2108,7 +2108,7 @@
 "7526": {
 "level": "setup",
 "plot": true,
-"hash": "455f3c4cd7bbbfc7",
+"hash": "893949c6013861e8",
 "model": "gpt-5.4-mini"
 },
 "7527": {
@@ -2466,9 +2466,9 @@
 "model": "gpt-5.4-mini"
 },
 "7586": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "7837d58639637b81",
+"hash": "f26a1f4d5b61aaba",
 "model": "gpt-5.4-mini"
 },
 "7587": {
@@ -2756,7 +2756,7 @@
 "7634": {
 "level": "full",
 "plot": true,
-"hash": "3610cbafea952e26",
+"hash": "675e2d456d8dc918",
 "model": "gpt-5.4-mini"
 },
 "7635": {
@@ -2768,7 +2768,7 @@
 "7636": {
 "level": "setup",
 "plot": true,
-"hash": "713a6e0c82cdeb63",
+"hash": "003d17620e1cfb33",
 "model": "gpt-5.4-mini"
 },
 "7637": {
@@ -3440,7 +3440,7 @@
 "7748": {
 "level": "setup",
 "plot": true,
-"hash": "a2f53f290fae14c2",
+"hash": "3aae58ca4c4611fa",
 "model": "gpt-5.4-mini"
 },
 "7749": {
@@ -3818,7 +3818,7 @@
 "7811": {
 "level": "setup",
 "plot": true,
-"hash": "fa9435fcdbab26c8",
+"hash": "420a0902f3c7e2b3",
 "model": "gpt-5.4-mini"
 },
 "7812": {
@@ -3926,7 +3926,7 @@
 "7829": {
 "level": "full",
 "plot": true,
-"hash": "fea036b2244426e2",
+"hash": "dbe0e01e4dc9d21b",
 "model": "gpt-5.4-mini"
 },
 "7830": {
@@ -4208,7 +4208,7 @@
 "7876": {
 "level": "setup",
 "plot": true,
-"hash": "359d6c43aae94449",
+"hash": "47b03d29746646eb",
 "model": "gpt-5.4-mini"
 },
 "7877": {
@@ -5546,7 +5546,7 @@
 "8099": {
 "level": "setup",
 "plot": true,
-"hash": "cce8cf25ea7fea1a",
+"hash": "75ffe929fef3e901",
 "model": "gpt-5.4-mini"
 },
 "8100": {
@@ -5994,9 +5994,9 @@
 "model": "gpt-5.4-mini"
 },
 "8174": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "0fd9f0cd7a1dc25c",
+"hash": "4ae657d1e04ea806",
 "model": "gpt-5.4-mini"
 },
 "8175": {
@@ -6726,9 +6726,9 @@
 "model": "gpt-5.4-mini"
 },
 "8296": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "88b645e5b4b0326c",
+"hash": "6bd26f8500fac2e3",
 "model": "gpt-5.4-mini"
 },
 "8297": {
@@ -6956,7 +6956,7 @@
 "8334": {
 "level": "setup",
 "plot": true,
-"hash": "c4cbc2ee423b5ab4",
+"hash": "55f69e320467f14a",
 "model": "gpt-5.4-mini"
 },
 "8335": {
@@ -7094,7 +7094,7 @@
 "8357": {
 "level": "setup",
 "plot": true,
-"hash": "640c4e36d4946e79",
+"hash": "4db3198ea2d75c0e",
 "model": "gpt-5.4-mini"
 },
 "8358": {
@@ -7742,7 +7742,7 @@
 "8465": {
 "level": "full",
 "plot": true,
-"hash": "4b06c561d270eb0e",
+"hash": "e7c04d77e5006e72",
 "model": "gpt-5.4-mini"
 },
 "8466": {
@@ -7994,7 +7994,7 @@
 "8507": {
 "level": "setup",
 "plot": true,
-"hash": "2f061ea496cdda00",
+"hash": "014c45a232c5f564",
 "model": "gpt-5.4-mini"
 },
 "8508": {
@@ -8264,7 +8264,7 @@
 "8552": {
 "level": "full",
 "plot": true,
-"hash": "f37235811850007c",
+"hash": "de1f49dae950af57",
 "model": "gpt-5.4-mini"
 },
 "8553": {
@@ -8880,9 +8880,9 @@
 "model": "gpt-5.4-mini"
 },
 "8655": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "a6f35cae9f575fc1",
+"hash": "cc507beddaa31170",
 "model": "gpt-5.4-mini"
 },
 "8656": {
@@ -9252,9 +9252,9 @@
 "model": "gpt-5.4-mini"
 },
 "8717": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "f35ea372420adc12",
+"hash": "abf60f3bd2b4ebae",
 "model": "gpt-5.4-mini"
 },
 "8718": {
@@ -9386,7 +9386,7 @@
 "8739": {
 "level": "full",
 "plot": true,
-"hash": "9d2140d86ce1bbf3",
+"hash": "618597a940f4fcf0",
 "model": "gpt-5.4-mini"
 },
 "8740": {
@@ -9614,7 +9614,7 @@
 "8777": {
 "level": "setup",
 "plot": true,
-"hash": "30d300c2bd1fd286",
+"hash": "479635cc4d0ce911",
 "model": "gpt-5.4-mini"
 },
 "8778": {
@@ -10050,9 +10050,9 @@
 "model": "gpt-5.4-mini"
 },
 "8850": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "b0a2e82b0ecf1f3e",
+"hash": "a6d611225fcb1e4f",
 "model": "gpt-5.4-mini"
 },
 "8851": {
@@ -10200,9 +10200,9 @@
 "model": "gpt-5.4-mini"
 },
 "8875": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "bd90cfc6851db470",
+"hash": "78d0d82e4113ca8b",
 "model": "gpt-5.4-mini"
 },
 "8876": {
@@ -10478,7 +10478,7 @@
 "8921": {
 "level": "full",
 "plot": true,
-"hash": "3623afda023c6173",
+"hash": "aac907062ea7601a",
 "model": "gpt-5.4-mini"
 },
 "8922": {
@@ -10872,9 +10872,9 @@
 "model": "gpt-5.4-mini"
 },
 "8987": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "fdb147aa7d1a1696",
+"hash": "891e111b64fef112",
 "model": "gpt-5.4-mini"
 },
 "8988": {
@@ -11084,7 +11084,7 @@
 "9022": {
 "level": "full",
 "plot": true,
-"hash": "5cbc0d3a7dea076f",
+"hash": "7e62f7ac62192202",
 "model": "gpt-5.4-mini"
 },
 "9023": {
@@ -12206,7 +12206,7 @@
 "9209": {
 "level": "setup",
 "plot": true,
-"hash": "4dda0187906ba1ad",
+"hash": "894044a92e9e3ac3",
 "model": "gpt-5.4-mini"
 },
 "9210": {
@@ -12500,7 +12500,7 @@
 "9258": {
 "level": "setup",
 "plot": true,
-"hash": "ec75ce8372f3ac1f",
+"hash": "5c4c2e9158f549a6",
 "model": "gpt-5.4-mini"
 },
 "9259": {
@@ -14138,7 +14138,7 @@
 "9531": {
 "level": "full",
 "plot": true,
-"hash": "73c8291b8a0b7487",
+"hash": "1de78db599ef6f84",
 "model": "gpt-5.4-mini"
 },
 "9532": {
@@ -14742,9 +14742,9 @@
 "model": "gpt-5.4-mini"
 },
 "9632": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "a3f1eb4719b0510b",
+"hash": "7d33b3481c8d0f42",
 "model": "gpt-5.4-mini"
 },
 "9633": {
@@ -15012,9 +15012,9 @@
 "model": "gpt-5.4-mini"
 },
 "9677": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "912fedc4d1abf46d",
+"hash": "0ab59fdc0dcaf741",
 "model": "gpt-5.4-mini"
 },
 "9678": {
@@ -15248,7 +15248,7 @@
 "9716": {
 "level": "full",
 "plot": true,
-"hash": "79903b92ea9f1c7c",
+"hash": "cd079c33b2604a43",
 "model": "gpt-5.4-mini"
 },
 "9717": {
@@ -15524,7 +15524,7 @@
 "9762": {
 "level": "setup",
 "plot": true,
-"hash": "7be509e163a34519",
+"hash": "370ab38ae24c042a",
 "model": "gpt-5.4-mini"
 },
 "9763": {
@@ -15770,7 +15770,7 @@
 "9803": {
 "level": "full",
 "plot": true,
-"hash": "85af6362d5cba861",
+"hash": "423f9969138e89b6",
 "model": "gpt-5.4-mini"
 },
 "9804": {
@@ -15966,9 +15966,9 @@
 "model": "gpt-5.4-mini"
 },
 "9836": {
-"level": "full",
+"level": "setup",
 "plot": true,
-"hash": "d118ae25ed3f56c5",
+"hash": "2b7c337ff5640ee2",
 "model": "gpt-5.4-mini"
 },
 "9837": {
@@ -16664,7 +16664,7 @@
 "9952": {
 "level": "full",
 "plot": true,
-"hash": "1f01c0450c76cf6e",
+"hash": "95b089286c3609df",
 "model": "gpt-5.4-mini"
 },
 "9953": {
@@ -16680,9 +16680,9 @@
 "model": "gpt-5.4-mini"
 },
 "9955": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "23cbf0a286fae170",
+"hash": "f0034deb574f6f40",
 "model": "gpt-5.4-mini"
 },
 "9956": {
@@ -16874,7 +16874,7 @@
 "9987": {
 "level": "full",
 "plot": true,
-"hash": "35c2e350e302332d",
+"hash": "96868c7e467ebc65",
 "model": "gpt-5.4-mini"
 },
 "9988": {
@@ -17492,7 +17492,7 @@
 "10090": {
 "level": "full",
 "plot": true,
-"hash": "222954967201bfa9",
+"hash": "6c2f847d9a32aa12",
 "model": "gpt-5.4-mini"
 },
 "10091": {
@@ -18098,7 +18098,7 @@
 "10191": {
 "level": "full",
 "plot": true,
-"hash": "71f4b00974c5a10b",
+"hash": "cdb4549e914deb3f",
 "model": "gpt-5.4-mini"
 },
 "10192": {
@@ -18428,7 +18428,7 @@
 "10246": {
 "level": "full",
 "plot": true,
-"hash": "1020c45a087d7b71",
+"hash": "f84807a7d1467c76",
 "model": "gpt-5.4-mini"
 },
 "10247": {
@@ -18822,9 +18822,9 @@
 "model": "gpt-5.4-mini"
 },
 "10312": {
-"level": "setup",
+"level": "full",
 "plot": true,
-"hash": "1059d1a7f893f6ab",
+"hash": "f992ef20cdefef54",
 "model": "gpt-5.4-mini"
 },
 "10313": {
@@ -18936,9 +18936,9 @@
 "model": "gpt-5.4-mini"
 },
 "10331": {
-"level": "none",
-"plot": false,
-"hash": "822fe133013bf351",
+"level": "full",
+"plot": true,
+"hash": "22e38698b1be080c",
 "model": "gpt-5.4-mini"
 },
 "10332": {
@@ -19460,7 +19460,7 @@
 "10418": {
 "level": "setup",
 "plot": true,
-"hash": "4998278fa1293def",
+"hash": "b0a2add12a0304ba",
 "model": "gpt-5.4-mini"
 },
 "10419": {
@@ -19964,7 +19964,7 @@
 "10502": {
 "level": "full",
 "plot": true,
-"hash": "c546295950197936",
+"hash": "09c41c3111d7effc",
 "model": "gpt-5.4-mini"
 },
 "10503": {
@@ -20222,7 +20222,7 @@
 "10545": {
 "level": "full",
 "plot": true,
-"hash": "bf537c3aa9fef77d",
+"hash": "549db64ec0ec0f63",
 "model": "gpt-5.4-mini"
 },
 "10546": {
@@ -21140,7 +21140,7 @@
 "10698": {
 "level": "full",
 "plot": true,
-"hash": "a44d77edec3305d5",
+"hash": "dac6e036ef36187a",
 "model": "gpt-5.4-mini"
 },
 "10699": {
@@ -21332,7 +21332,7 @@
 "10730": {
 "level": "full",
 "plot": true,
-"hash": "8767fad1d745847c",
+"hash": "edb80a330173ee7a",
 "model": "gpt-5.4-mini"
 },
 "10731": {
@@ -21636,9 +21636,9 @@
 "model": "gpt-5.4-mini"
 },
 "10781": {
-"level": "none",
-"plot": false,
-"hash": "3872363037676ab7",
+"level": "setup",
+"plot": true,
+"hash": "af91688b9b4d269c",
 "model": "gpt-5.4-mini"
 },
 "10782": {
@@ -21710,7 +21710,7 @@
 "10793": {
 "level": "none",
 "plot": false,
-"hash": "21a515bc90370a36",
+"hash": "d70d6336ec9ac267",
 "model": "gpt-5.4-mini"
 },
 "10794": {
@@ -21740,7 +21740,7 @@
 "10798": {
 "level": "full",
 "plot": true,
-"hash": "f6d568c74a278df1",
+"hash": "63cd6f72efd1c35e",
 "model": "gpt-5.4-mini"
 },
 "10799": {
@@ -22082,7 +22082,7 @@
 "10855": {
 "level": "setup",
 "plot": true,
-"hash": "4ba0ac24fb5b16cb",
+"hash": "ddbb1c84c46c83ed",
 "model": "gpt-5.4-mini"
 },
 "10856": {
@@ -22298,7 +22298,7 @@
 "10891": {
 "level": "setup",
 "plot": true,
-"hash": "3e06d976802fefe1",
+"hash": "aa964d4e3535efe5",
 "model": "gpt-5.4-mini"
 },
 "10892": {
@@ -22320,9 +22320,9 @@
 "model": "gpt-5.4-mini"
 },
 "10895": {
-"level": "none",
-"plot": false,
-"hash": "cf3d0073a141c9eb",
+"level": "full",
+"plot": true,
+"hash": "4241e7ef36ca878c",
 "model": "gpt-5.4-mini"
 },
 "10896": {
@@ -22398,9 +22398,9 @@
 "model": "gpt-5.4-mini"
 },
 "10908": {
-"level": "none",
-"plot": false,
-"hash": "e57ab9b6d0c0ffbe",
+"level": "full",
+"plot": true,
+"hash": "da37ca58a078a588",
 "model": "gpt-5.4-mini"
 },
 "10909": {
@@ -22412,7 +22412,7 @@
 "10910": {
 "level": "setup",
 "plot": true,
-"hash": "598325be30728c0e",
+"hash": "1ccc30ee6ff18f2b",
 "model": "gpt-5.4-mini"
 },
 "10911": {
@@ -22634,7 +22634,7 @@
 "10947": {
 "level": "setup",
 "plot": true,
-"hash": "566dcd3efe7f64f0",
+"hash": "7c2bd181aed673e0",
 "model": "gpt-5.4-mini"
 },
 "10948": {
@@ -22754,7 +22754,7 @@
 "10967": {
 "level": "setup",
 "plot": true,
-"hash": "33543da202344300",
+"hash": "0e73c08a7931531c",
 "model": "gpt-5.4-mini"
 },
 "10968": {
@@ -22988,7 +22988,7 @@
 "11006": {
 "level": "full",
 "plot": true,
-"hash": "4e8b45d637aeb1c6",
+"hash": "8ff6ac541edd1627",
 "model": "gpt-5.4-mini"
 },
 "11007": {
@@ -23042,7 +23042,7 @@
 "11015": {
 "level": "full",
 "plot": true,
-"hash": "e1bff1b2d34527a1",
+"hash": "7997c584fec5386b",
 "model": "gpt-5.4-mini"
 },
 "11016": {
@@ -23114,7 +23114,7 @@
 "11027": {
 "level": "setup",
 "plot": true,
-"hash": "08b18792fd90de6f",
+"hash": "6426e9e9bf913c98",
 "model": "gpt-5.4-mini"
 },
 "11028": {
@@ -23336,7 +23336,7 @@
 "11064": {
 "level": "setup",
 "plot": true,
-"hash": "324ab9567e76e59b",
+"hash": "8868174e110e93a8",
 "model": "gpt-5.4-mini"
 },
 "11065": {
@@ -23406,9 +23406,9 @@
 "model": "gpt-5.4-mini"
 },
 "11076": {
-"level": "none",
-"plot": false,
-"hash": "1b4821add224a188",
+"level": "setup",
+"plot": true,
+"hash": "3dd30f5ba2a229d1",
 "model": "gpt-5.4-mini"
 },
 "11077": {
@@ -23792,7 +23792,7 @@
 "11140": {
 "level": "full",
 "plot": true,
-"hash": "ae3024334ecf4197",
+"hash": "fc3fb23718bccda2",
 "model": "gpt-5.4-mini"
 },
 "11141": {
@@ -24242,7 +24242,7 @@
 "11215": {
 "level": "full",
 "plot": true,
-"hash": "b0d91eb604796900",
+"hash": "04841081d52350c4",
 "model": "gpt-5.4-mini"
 },
 "11216": {
@@ -25400,7 +25400,7 @@
 "11410": {
 "level": "full",
 "plot": true,
-"hash": "933edda117d0eecd",
+"hash": "310b0beeb7b013c8",
 "model": "gpt-5.4-mini"
 },
 "11411": {
@@ -26072,7 +26072,7 @@
 "11522": {
 "level": "full",
 "plot": true,
-"hash": "27d32c733fa7d5f8",
+"hash": "509987b93b534a4d",
 "model": "gpt-5.4-mini"
 },
 "11523": {
@@ -26414,7 +26414,7 @@
 "11582": {
 "level": "full",
 "plot": true,
-"hash": "fcfc4945a1df9f0f",
+"hash": "216c1ae4c5bc80b7",
 "model": "gpt-5.4-mini"
 },
 "11583": {
@@ -26624,7 +26624,7 @@
 "11619": {
 "level": "full",
 "plot": true,
-"hash": "08753b17606835c8",
+"hash": "0978dccbf7b851e7",
 "model": "gpt-5.4-mini"
 },
 "11620": {
@@ -26744,13 +26744,13 @@
 "11641": {
 "level": "full",
 "plot": true,
-"hash": "72bad04010cf69b6",
+"hash": "298f01a11eb14005",
 "model": "gpt-5.4-mini"
 },
 "11642": {
 "level": "full",
 "plot": true,
-"hash": "5ceafc439805bc4a",
+"hash": "af088654b7a29ea5",
 "model": "gpt-5.4-mini"
 },
 "11643": {
@@ -26762,7 +26762,7 @@
 "11644": {
 "level": "full",
 "plot": true,
-"hash": "ea4ccc903b1d5b24",
+"hash": "4508fa3e2a6acadd",
 "model": "gpt-5.4-mini"
 },
 "11645": {
@@ -26820,9 +26820,9 @@
 "model": "gpt-5.4-mini"
 },
 "11654": {
-"level": "full",
+"level": "setup",
 "plot": true,
-"hash": "d35c45772fbbb319",
+"hash": "0bdc7f7dd067d71a",
 "model": "gpt-5.4-mini"
 },
 "11655": {
@@ -26912,7 +26912,7 @@
 "11669": {
 "level": "full",
 "plot": true,
-"hash": "af63cf7a4e96b750",
+"hash": "10e76ec9812a0239",
 "model": "gpt-5.4-mini"
 },
 "11671": {
@@ -26954,7 +26954,7 @@
 "11677": {
 "level": "full",
 "plot": true,
-"hash": "d5cc987c911e6385",
+"hash": "3aeff8b179f8c837",
 "model": "gpt-5.4-mini"
 },
 "11678": {
@@ -27092,7 +27092,7 @@
 "11700": {
 "level": "full",
 "plot": true,
-"hash": "4386369e20b2bb64",
+"hash": "dd0b419df0a9508e",
 "model": "gpt-5.4-mini"
 },
 "11701": {
@@ -27128,7 +27128,7 @@
 "11706": {
 "level": "full",
 "plot": true,
-"hash": "fe4697793d32ba4c",
+"hash": "2cacfa6dc1de8a21",
 "model": "gpt-5.4-mini"
 },
 "11707": {
@@ -27320,13 +27320,13 @@
 "11738": {
 "level": "full",
 "plot": true,
-"hash": "0c1c30aca451f667",
+"hash": "91f8d1be2359512e",
 "model": "gpt-5.4-mini"
 },
 "11739": {
 "level": "full",
 "plot": true,
-"hash": "56f2139ac5a5bd29",
+"hash": "df5d8abb4e6c06dc",
 "model": "gpt-5.4-mini"
 },
 "11740": {
@@ -27476,7 +27476,7 @@
 "11764": {
 "level": "full",
 "plot": true,
-"hash": "e1d406fbb8eae201",
+"hash": "12130df4276626d5",
 "model": "gpt-5.4-mini"
 },
 "11765": {
@@ -27488,7 +27488,7 @@
 "11766": {
 "level": "full",
 "plot": true,
-"hash": "8ebed4d88903738a",
+"hash": "52527bc218091272",
 "model": "gpt-5.4-mini"
 },
 "11767": {
@@ -27506,7 +27506,7 @@
 "11769": {
 "level": "full",
 "plot": true,
-"hash": "98a3ec79998a1397",
+"hash": "9ab304549407a656",
 "model": "gpt-5.4-mini"
 },
 "11770": {
@@ -27554,13 +27554,13 @@
 "11777": {
 "level": "full",
 "plot": true,
-"hash": "e02f1867a72f5aae",
+"hash": "1048982802016457",
 "model": "gpt-5.4-mini"
 },
 "11778": {
 "level": "full",
 "plot": true,
-"hash": "2b124afba2ccc9f9",
+"hash": "ed61d07d61fae3ee",
 "model": "gpt-5.4-mini"
 },
 "11779": {
@@ -27578,7 +27578,7 @@
 "11781": {
 "level": "full",
 "plot": true,
-"hash": "a2327304a9d22b56",
+"hash": "603d6a89da61f330",
 "model": "gpt-5.4-mini"
 },
 "11782": {
@@ -27596,7 +27596,7 @@
 "11784": {
 "level": "full",
 "plot": true,
-"hash": "5fa482f84285efeb",
+"hash": "f64bd697df17386b",
 "model": "gpt-5.4-mini"
 },
 "11785": {
@@ -27968,7 +27968,7 @@
 "11846": {
 "level": "full",
 "plot": true,
-"hash": "d066eaf5d2357674",
+"hash": "a0460660e9427f52",
 "model": "gpt-5.4-mini"
 },
 "11847": {
@@ -28112,7 +28112,7 @@
 "11870": {
 "level": "full",
 "plot": true,
-"hash": "f23243e31e020913",
+"hash": "10d99c06daa4e544",
 "model": "gpt-5.4-mini"
 },
 "11871": {
@@ -28148,7 +28148,7 @@
 "11876": {
 "level": "full",
 "plot": true,
-"hash": "58d0eb9e012e2551",
+"hash": "2fe4213cc4f671c9",
 "model": "gpt-5.4-mini"
 },
 "11877": {
@@ -28286,7 +28286,7 @@
 "11900": {
 "level": "full",
 "plot": true,
-"hash": "da06b013881ff277",
+"hash": "f16fe046d4f23511",
 "model": "gpt-5.4-mini"
 },
 "11901": {
@@ -28334,7 +28334,7 @@
 "11908": {
 "level": "full",
 "plot": true,
-"hash": "9dd2f5de4f0fd436",
+"hash": "7de399e123e44921",
 "model": "gpt-5.4-mini"
 },
 "11909": {
@@ -28754,7 +28754,7 @@
 "11978": {
 "level": "full",
 "plot": true,
-"hash": "60f721ca84440d05",
+"hash": "0b319e3076af03f2",
 "model": "gpt-5.4-mini"
 },
 "11979": {
@@ -29198,7 +29198,7 @@
 "12052": {
 "level": "full",
 "plot": true,
-"hash": "4bce7a2f58669bae",
+"hash": "97fe6d257bccc259",
 "model": "gpt-5.4-mini"
 },
 "12053": {
@@ -29210,7 +29210,7 @@
 "12054": {
 "level": "full",
 "plot": true,
-"hash": "5f4a0e2f74529cb3",
+"hash": "a5fbbf95a22d39c1",
 "model": "gpt-5.4-mini"
 },
 "12055": {
@@ -29324,7 +29324,7 @@
 "12073": {
 "level": "full",
 "plot": true,
-"hash": "8368acad39ddbec1",
+"hash": "2f7dc2d5e4224cf6",
 "model": "gpt-5.4-mini"
 },
 "12074": {
@@ -29502,9 +29502,9 @@
 "model": "gpt-5.4-mini"
 },
 "12103": {
-"level": "none",
-"plot": false,
-"hash": "a9af503ea4204dca",
+"level": "full",
+"plot": true,
+"hash": "b882eb740b6dfe3c",
 "model": "gpt-5.4-mini"
 },
 "12104": {
@@ -29522,7 +29522,7 @@
 "12106": {
 "level": "full",
 "plot": true,
-"hash": "5755e672329336dc",
+"hash": "8f2a3cbed4db96c8",
 "model": "gpt-5.4-mini"
 },
 "12107": {
@@ -29690,7 +29690,7 @@
 "12134": {
 "level": "full",
 "plot": true,
-"hash": "f71e66cb4f4251ba",
+"hash": "160f2ebf3af55f80",
 "model": "gpt-5.4-mini"
 },
 "12135": {
@@ -29840,7 +29840,7 @@
 "12159": {
 "level": "full",
 "plot": true,
-"hash": "742de1811775ca21",
+"hash": "18b53fa2eee1ea14",
 "model": "gpt-5.4-mini"
 },
 "12160": {
@@ -29912,13 +29912,13 @@
 "12171": {
 "level": "full",
 "plot": true,
-"hash": "568ea741d2faa33b",
+"hash": "36cfb0a251a71672",
 "model": "gpt-5.4-mini"
 },
 "12172": {
 "level": "full",
 "plot": true,
-"hash": "e74d26ba90f35c0c",
+"hash": "c4e8f5ebb8679a1f",
 "model": "gpt-5.4-mini"
 },
 "12173": {
@@ -29928,9 +29928,9 @@
 "model": "gpt-5.4-mini"
 },
 "12174": {
-"level": "none",
-"plot": false,
-"hash": "ab2131f989786eda",
+"level": "full",
+"plot": true,
+"hash": "94c344c2020805f5",
 "model": "gpt-5.4-mini"
 },
 "12175": {
@@ -30002,7 +30002,7 @@
 "12186": {
 "level": "full",
 "plot": true,
-"hash": "b75908e3bdc59a08",
+"hash": "7a0d78489341ab2c",
 "model": "gpt-5.4-mini"
 },
 "12187": {
@@ -30096,9 +30096,9 @@
 "model": "gpt-5.4-mini"
 },
 "12202": {
-"level": "none",
-"plot": false,
-"hash": "028ab5d501fa10c0",
+"level": "full",
+"plot": true,
+"hash": "4f622d9d7e3338f7",
 "model": "gpt-5.4-mini"
 },
 "12203": {
@@ -30314,7 +30314,7 @@
 "12238": {
 "level": "full",
 "plot": true,
-"hash": "44b384a4a4ae3612",
+"hash": "bd5165d34329edf5",
 "model": "gpt-5.4-mini"
 },
 "12239": {
@@ -30932,7 +30932,7 @@
 "12342": {
 "level": "full",
 "plot": true,
-"hash": "2faecf10b36ad29b",
+"hash": "8c6fea05ed32084e",
 "model": "gpt-5.4-mini"
 },
 "12343": {
@@ -30980,7 +30980,7 @@
 "12350": {
 "level": "full",
 "plot": true,
-"hash": "8bc5fedc98cd17cd",
+"hash": "ad5d643dfc40f25f",
 "model": "gpt-5.4-mini"
 },
 "12351": {
@@ -31232,7 +31232,7 @@
 "12394": {
 "level": "full",
 "plot": true,
-"hash": "fc4372a26dd76fc5",
+"hash": "4cb0ef9d12226cbf",
 "model": "gpt-5.4-mini"
 },
 "12395": {
@@ -31316,7 +31316,7 @@
 "12408": {
 "level": "full",
 "plot": true,
-"hash": "6caa1c6826ff32dc",
+"hash": "7af10098cd7a8faf",
 "model": "gpt-5.4-mini"
 },
 "12409": {
@@ -31472,7 +31472,7 @@
 "12436": {
 "level": "full",
 "plot": true,
-"hash": "ad8a96262bcd43e9",
+"hash": "19d4c900b26338df",
 "model": "gpt-5.4-mini"
 },
 "12437": {
@@ -31532,7 +31532,7 @@
 "12446": {
 "level": "full",
 "plot": true,
-"hash": "4c22938de2efca3f",
+"hash": "7aa4ab3239e04a26",
 "model": "gpt-5.4-mini"
 },
 "12447": {
@@ -31650,9 +31650,9 @@
 "model": "gpt-5.4-mini"
 },
 "12466": {
-"level": "full",
+"level": "setup",
 "plot": true,
-"hash": "64a6ca1ad533b662",
+"hash": "78f0013256b746ed",
 "model": "gpt-5.4-mini"
 },
 "12467": {
@@ -31682,7 +31682,7 @@
 "12472": {
 "level": "full",
 "plot": true,
-"hash": "62c4b75eaef5099c",
+"hash": "973dd8239eee592a",
 "model": "gpt-5.4-mini"
 },
 "12473": {
@@ -31718,7 +31718,7 @@
 "12478": {
 "level": "full",
 "plot": true,
-"hash": "c58962a8595c6dc3",
+"hash": "0b9d7c8d2f312a53",
 "model": "gpt-5.4-mini"
 },
 "12479": {
@@ -31748,7 +31748,7 @@
 "12483": {
 "level": "full",
 "plot": true,
-"hash": "a24a9ab5b76b5f6c",
+"hash": "0a7cd4c04fdae827",
 "model": "gpt-5.4-mini"
 },
 "12484": {
@@ -31868,7 +31868,7 @@
 "12503": {
 "level": "full",
 "plot": true,
-"hash": "9113204e9ef92733",
+"hash": "dd7db6a15c93076a",
 "model": "gpt-5.4-mini"
 },
 "12504": {
@@ -32018,7 +32018,7 @@
 "12529": {
 "level": "full",
 "plot": true,
-"hash": "c857c57b83cd6291",
+"hash": "cd745fb851e7a1e1",
 "model": "gpt-5.4-mini"
 },
 "12530": {
@@ -32030,7 +32030,7 @@
 "12531": {
 "level": "full",
 "plot": true,
-"hash": "801cf4bd093ee8e2",
+"hash": "a02a5f23fcca18d0",
 "model": "gpt-5.4-mini"
 },
 "12532": {
@@ -32168,7 +32168,7 @@
 "12554": {
 "level": "full",
 "plot": true,
-"hash": "9a393ee3573cff8a",
+"hash": "a9e513dea98d6cdf",
 "model": "gpt-5.4-mini"
 },
 "12555": {
@@ -32288,7 +32288,7 @@
 "12574": {
 "level": "full",
 "plot": true,
-"hash": "e7b615debc8e6c78",
+"hash": "600aebab46359b32",
 "model": "gpt-5.4-mini"
 },
 "12575": {
@@ -32312,7 +32312,7 @@
 "12579": {
 "level": "full",
 "plot": true,
-"hash": "14c4ac2146c9ee49",
+"hash": "7baf76533b0c0541",
 "model": "gpt-5.4-mini"
 },
 "12580": {
@@ -32870,7 +32870,7 @@
 "12676": {
 "level": "full",
 "plot": true,
-"hash": "bb698809e339a4bd",
+"hash": "6687a31bb05e7319",
 "model": "gpt-5.4-mini"
 },
 "12677": {
@@ -33044,7 +33044,7 @@
 "12710": {
 "level": "full",
 "plot": true,
-"hash": "fdcb4b474ec49d0c",
+"hash": "fd4bd4cac7c874ac",
 "model": "gpt-5.4-mini"
 },
 "12711": {
@@ -33170,7 +33170,7 @@
 "12731": {
 "level": "full",
 "plot": true,
-"hash": "fe9a69f81e393e34",
+"hash": "b7a92026fb50f88f",
 "model": "gpt-5.4-mini"
 },
 "12732": {
@@ -33290,7 +33290,7 @@
 "12751": {
 "level": "full",
 "plot": true,
-"hash": "357213f5760cbe5e",
+"hash": "cfe9b061b0727637",
 "model": "gpt-5.4-mini"
 },
 "12752": {
@@ -33404,7 +33404,7 @@
 "12771": {
 "level": "full",
 "plot": true,
-"hash": "70b0f89b12ba5f59",
+"hash": "167292792e203475",
 "model": "gpt-5.4-mini"
 },
 "12772": {
@@ -33476,7 +33476,7 @@
 "12784": {
 "level": "full",
 "plot": true,
-"hash": "28e80eb1075a3c29",
+"hash": "02f926591ae9fc8b",
 "model": "gpt-5.4-mini"
 },
 "12785": {
@@ -33876,9 +33876,9 @@
 "model": "gpt-5.4-mini"
 },
 "12880": {
-"level": "full",
+"level": "setup",
 "plot": true,
-"hash": "af022f52f7c12ee5",
+"hash": "d700460edd1c4596",
 "model": "gpt-5.4-mini"
 },
 "12881": {
@@ -33920,7 +33920,7 @@
 "12887": {
 "level": "full",
 "plot": true,
-"hash": "98bc31ff2c1cc67a",
+"hash": "fe32d26ccfb6eadb",
 "model": "gpt-5.4-mini"
 },
 "12888": {
@@ -34142,7 +34142,7 @@
 "12936": {
 "level": "full",
 "plot": true,
-"hash": "ed24379fa2a6d133",
+"hash": "96ae56d973648f05",
 "model": "gpt-5.4-mini"
 },
 "12937": {
@@ -34160,7 +34160,7 @@
 "12939": {
 "level": "full",
 "plot": true,
-"hash": "73ebb0f1b05c9b03",
+"hash": "fa07629bee513202",
 "model": "gpt-5.4-mini"
 },
 "12940": {
@@ -34454,7 +34454,7 @@
 "12996": {
 "level": "full",
 "plot": true,
-"hash": "5e5d6bf6742faa88",
+"hash": "2b1acd628ff60926",
 "model": "gpt-5.4-mini"
 },
 "12997": {
@@ -34988,7 +34988,7 @@
 "13089": {
 "level": "full",
 "plot": true,
-"hash": "2e612ddbb2207cd0",
+"hash": "3203dfe2946e74bb",
 "model": "gpt-5.4-mini"
 },
 "13090": {
@@ -35180,7 +35180,7 @@
 "13124": {
 "level": "full",
 "plot": true,
-"hash": "2230eca5fabcb856",
+"hash": "dde34394dcdfc539",
 "model": "gpt-5.4-mini"
 },
 "13125": {
@@ -35258,7 +35258,7 @@
 "13137": {
 "level": "full",
 "plot": true,
-"hash": "3f674bf5e7594a78",
+"hash": "ce9c5c0fab725f0c",
 "model": "gpt-5.4-mini"
 },
 "13138": {
@@ -35306,7 +35306,7 @@
 "13145": {
 "level": "full",
 "plot": true,
-"hash": "723147b2c7e32b5d",
+"hash": "a49415a37251c8e9",
 "model": "gpt-5.4-mini"
 },
 "13146": {
@@ -35678,7 +35678,7 @@
 "13209": {
 "level": "full",
 "plot": true,
-"hash": "5d1dfab855ba0f25",
+"hash": "aa096dfbb433a977",
 "model": "gpt-5.4-mini"
 },
 "13211": {
@@ -35810,7 +35810,7 @@
 "13232": {
 "level": "full",
 "plot": true,
-"hash": "08257e907fcc2e5f",
+"hash": "86cb0636fa94c349",
 "model": "gpt-5.4-mini"
 },
 "13233": {
@@ -35858,7 +35858,7 @@
 "13240": {
 "level": "full",
 "plot": true,
-"hash": "3d426c32bc541076",
+"hash": "1baf376a5ccd6e50",
 "model": "gpt-5.4-mini"
 },
 "13241": {
@@ -35996,13 +35996,13 @@
 "13263": {
 "level": "full",
 "plot": true,
-"hash": "c4d2eb5b857900f5",
+"hash": "287fce4b87468b95",
 "model": "gpt-5.4-mini"
 },
 "13264": {
 "level": "full",
 "plot": true,
-"hash": "692b37f56e9e1d21",
+"hash": "a542980bf8a7c675",
 "model": "gpt-5.4-mini"
 },
 "13265": {
@@ -36314,7 +36314,7 @@
 "13318": {
 "level": "full",
 "plot": true,
-"hash": "d6bd3cb727a2c294",
+"hash": "be9defb04bb2b780",
 "model": "gpt-5.4-mini"
 },
 "13319": {
@@ -36428,7 +36428,7 @@
 "13339": {
 "level": "full",
 "plot": true,
-"hash": "3d212c36b4826ad9",
+"hash": "b16bc3e4ff8c7985",
 "model": "gpt-5.4-mini"
 },
 "13340": {
@@ -36656,7 +36656,7 @@
 "13378": {
 "level": "full",
 "plot": true,
-"hash": "916e40c7871e5c57",
+"hash": "fffaea16b965961e",
 "model": "gpt-5.4-mini"
 },
 "13379": {
@@ -36722,7 +36722,7 @@
 "13389": {
 "level": "full",
 "plot": true,
-"hash": "d798ecba8b4c557c",
+"hash": "5479f0a5304942df",
 "model": "gpt-5.4-mini"
 },
 "13390": {
@@ -36758,7 +36758,7 @@
 "13396": {
 "level": "full",
 "plot": true,
-"hash": "55cc796c567b840e",
+"hash": "9f158abe05b3cf15",
 "model": "gpt-5.4-mini"
 },
 "13397": {
@@ -36770,7 +36770,7 @@
 "13398": {
 "level": "full",
 "plot": true,
-"hash": "7339d894c01a0724",
+"hash": "1f5589a908964b90",
 "model": "gpt-5.4-mini"
 },
 "13399": {
@@ -36788,13 +36788,13 @@
 "13401": {
 "level": "full",
 "plot": true,
-"hash": "92fc94e01bea6f01",
+"hash": "43a09b3a264f8eee",
 "model": "gpt-5.4-mini"
 },
 "13402": {
 "level": "full",
 "plot": true,
-"hash": "42c1d2670755e142",
+"hash": "05006f189e68c361",
 "model": "gpt-5.4-mini"
 },
 "13403": {
@@ -36812,13 +36812,13 @@
 "13405": {
 "level": "full",
 "plot": true,
-"hash": "1715129e17fa7fe1",
+"hash": "ba84a79f47719f6c",
 "model": "gpt-5.4-mini"
 },
 "13406": {
 "level": "full",
 "plot": true,
-"hash": "8f6aae9a9504eb75",
+"hash": "4deadc426f2c6f11",
 "model": "gpt-5.4-mini"
 },
 "13407": {
@@ -36926,7 +36926,7 @@
 "13429": {
 "level": "full",
 "plot": true,
-"hash": "d1e96ea9b3ed4c1d",
+"hash": "38cfeba50af4c68b",
 "model": "gpt-5.4-mini"
 },
 "13430": {
@@ -36992,13 +36992,13 @@
 "13440": {
 "level": "full",
 "plot": true,
-"hash": "1331a7b7a5be5641",
+"hash": "0b97dc3993a02df0",
 "model": "gpt-5.4-mini"
 },
 "13441": {
 "level": "full",
 "plot": true,
-"hash": "920d81c1b66e2666",
+"hash": "299800da60717eb1",
 "model": "gpt-5.4-mini"
 },
 "13442": {
@@ -37118,7 +37118,7 @@
 "13461": {
 "level": "full",
 "plot": true,
-"hash": "2f617650ddffcdfb",
+"hash": "a93ebcff6b72886f",
 "model": "gpt-5.4-mini"
 },
 "13462": {
@@ -37172,13 +37172,13 @@
 "13470": {
 "level": "full",
 "plot": true,
-"hash": "10d7d771cdc8d8b4",
+"hash": "177e780b8392d118",
 "model": "gpt-5.4-mini"
 },
 "13471": {
 "level": "full",
 "plot": true,
-"hash": "14d22c4cf2cccbfd",
+"hash": "3fa7aa8ee9177db0",
 "model": "gpt-5.4-mini"
 },
 "13472": {
@@ -37208,7 +37208,7 @@
 "13476": {
 "level": "full",
 "plot": true,
-"hash": "17f87d4fb715558e",
+"hash": "c8595f2ff0925bf3",
 "model": "gpt-5.4-mini"
 },
 "13477": {
@@ -37316,7 +37316,7 @@
 "13494": {
 "level": "full",
 "plot": true,
-"hash": "31d6681dc1e8f8d5",
+"hash": "9c0769fd52c62411",
 "model": "gpt-5.4-mini"
 },
 "13495": {
@@ -37328,7 +37328,7 @@
 "13496": {
 "level": "full",
 "plot": true,
-"hash": "7689b8110003feb2",
+"hash": "f9270c655e26a1b6",
 "model": "gpt-5.4-mini"
 },
 "13497": {
@@ -37484,7 +37484,7 @@
 "13522": {
 "level": "full",
 "plot": true,
-"hash": "daaa791b1f30a7d0",
+"hash": "bd69e8a3b70822aa",
 "model": "gpt-5.4-mini"
 },
 "13523": {
@@ -37526,7 +37526,7 @@
 "13529": {
 "level": "full",
 "plot": true,
-"hash": "376c5f22fe28418d",
+"hash": "6bf15c131d9ed110",
 "model": "gpt-5.4-mini"
 },
 "13530": {
@@ -37868,7 +37868,7 @@
 "13599": {
 "level": "full",
 "plot": true,
-"hash": "da66b798d9e143f1",
+"hash": "39b8b17f1c2a56ce",
 "model": "gpt-5.4-mini"
 },
 "13600": {
@@ -37950,9 +37950,9 @@
 "model": "gpt-5.4-mini"
 },
 "13613": {
-"level": "full",
-"plot": true,
-"hash": "fcf24984d6f9359f",
+"level": "none",
+"plot": false,
+"hash": "ab8179c1f9b28911",
 "model": "gpt-5.4-mini"
 },
 "13614": {
@@ -37982,7 +37982,7 @@
 "13618": {
 "level": "full",
 "plot": true,
-"hash": "0767f95e1854eee3",
+"hash": "cb825f630cb46e3c",
 "model": "gpt-5.4-mini"
 },
 "13619": {
@@ -38066,7 +38066,7 @@
 "13632": {
 "level": "none",
 "plot": false,
-"hash": "203c197acf125405",
+"hash": "85e8b96406e9ae7e",
 "model": "gpt-5.4-mini"
 },
 "13633": {
@@ -38078,7 +38078,7 @@
 "13634": {
 "level": "full",
 "plot": true,
-"hash": "7cdedd66445187ab",
+"hash": "37ed1d97992bf9ab",
 "model": "gpt-5.4-mini"
 },
 "13635": {
@@ -38228,7 +38228,7 @@
 "13659": {
 "level": "full",
 "plot": true,
-"hash": "bf230a2b1dd1c146",
+"hash": "db86574d1cba759c",
 "model": "gpt-5.4-mini"
 },
 "13660": {
@@ -38352,9 +38352,9 @@
 "model": "gpt-5.4-mini"
 },
 "13682": {
-"level": "full",
+"level": "setup",
 "plot": true,
-"hash": "39d67df2de99aa01",
+"hash": "c696b51643f26e78",
 "model": "gpt-5.4-mini"
 },
 "13683": {
@@ -38438,7 +38438,7 @@
 "13696": {
 "level": "full",
 "plot": true,
-"hash": "cbd46c37dc39c98e",
+"hash": "ee05f15f5f431f5c",
 "model": "gpt-5.4-mini"
 },
 "13697": {
@@ -38462,7 +38462,7 @@
 "13700": {
 "level": "full",
 "plot": true,
-"hash": "84daaf088a585b8c",
+"hash": "6af8b1e3efd2930b",
 "model": "gpt-5.4-mini"
 },
 "13701": {
@@ -38474,7 +38474,7 @@
 "13702": {
 "level": "full",
 "plot": true,
-"hash": "e67c735ae32c1e51",
+"hash": "699e633f2306999a",
 "model": "gpt-5.4-mini"
 },
 "13703": {
@@ -38546,7 +38546,7 @@
 "13714": {
 "level": "full",
 "plot": true,
-"hash": "e86b15b07bcd4fee",
+"hash": "47422577596b1ff9",
 "model": "gpt-5.4-mini"
 },
 "13715": {
@@ -38828,7 +38828,7 @@
 "13761": {
 "level": "full",
 "plot": true,
-"hash": "dd11d0557bf89c69",
+"hash": "73af410dc264e770",
 "model": "gpt-5.4-mini"
 },
 "13762": {
@@ -39062,7 +39062,7 @@
 "13800": {
 "level": "full",
 "plot": true,
-"hash": "9ffc9b690b0fd426",
+"hash": "a2103317412a4853",
 "model": "gpt-5.4-mini"
 },
 "13801": {
@@ -39140,7 +39140,7 @@
 "13813": {
 "level": "full",
 "plot": true,
-"hash": "9f706b7e307759da",
+"hash": "9e0cdb8cfebd52ba",
 "model": "gpt-5.4-mini"
 },
 "13814": {
@@ -39206,7 +39206,7 @@
 "13824": {
 "level": "full",
 "plot": true,
-"hash": "7f7f546d6866b41d",
+"hash": "330d93f5c1571eff",
 "model": "gpt-5.4-mini"
 },
 "13825": {
@@ -39230,7 +39230,7 @@
 "13828": {
 "level": "full",
 "plot": true,
-"hash": "445343b22a841273",
+"hash": "1c683157ba2a9795",
 "model": "gpt-5.4-mini"
 },
 "13829": {
@@ -39284,7 +39284,7 @@
 "13837": {
 "level": "full",
 "plot": true,
-"hash": "3eb84b1dd7a4966d",
+"hash": "7dd46092d94bd015",
 "model": "gpt-5.4-mini"
 },
 "13838": {
@@ -39884,7 +39884,7 @@
 "13938": {
 "level": "full",
 "plot": true,
-"hash": "3540e17df6bc3b71",
+"hash": "ac658f38c26a1cf1",
 "model": "gpt-5.4-mini"
 },
 "13939": {
@@ -40274,7 +40274,7 @@
 "14005": {
 "level": "full",
 "plot": true,
-"hash": "9f0f6565afe42e43",
+"hash": "3fbf0d7fa42993be",
 "model": "gpt-5.4-mini"
 },
 "14006": {
@@ -40322,7 +40322,7 @@
 "14013": {
 "level": "full",
 "plot": true,
-"hash": "5bf71b5159fde4ab",
+"hash": "e4780cb0f25644d8",
 "model": "gpt-5.4-mini"
 },
 "14014": {
@@ -40334,7 +40334,7 @@
 "14016": {
 "level": "full",
 "plot": true,
-"hash": "fd4ae2388df78246",
+"hash": "ae33b22ff0ede110",
 "model": "gpt-5.4-mini"
 },
 "14017": {
@@ -40382,7 +40382,7 @@
 "14024": {
 "level": "full",
 "plot": true,
-"hash": "ae3c40968973cf20",
+"hash": "1285564caeaf1434",
 "model": "gpt-5.4-mini"
 },
 "14025": {
@@ -40400,7 +40400,7 @@
 "14027": {
 "level": "full",
 "plot": true,
-"hash": "13ec8aad0f769bf1",
+"hash": "419cde13581b6787",
 "model": "gpt-5.4-mini"
 },
 "14028": {
@@ -40412,7 +40412,7 @@
 "14029": {
 "level": "full",
 "plot": true,
-"hash": "ab62d89db8768597",
+"hash": "c15a31b1d7eb210d",
 "model": "gpt-5.4-mini"
 },
 "14030": {
@@ -40490,7 +40490,7 @@
 "14042": {
 "level": "full",
 "plot": true,
-"hash": "fa3c6ef147173e4b",
+"hash": "4170101dc264a13c",
 "model": "gpt-5.4-mini"
 },
 "14043": {
@@ -40664,7 +40664,7 @@
 "14075": {
 "level": "full",
 "plot": true,
-"hash": "9b01f0ec4a7c79d4",
+"hash": "516f9685d827babd",
 "model": "gpt-5.4-mini"
 },
 "14076": {
@@ -40674,9 +40674,9 @@
 "model": "gpt-5.4-mini"
 },
 "14077": {
-"level": "full",
+"level": "setup",
 "plot": true,
-"hash": "88d48b3cd4ba803c",
+"hash": "78eb0de8e64d665f",
 "model": "gpt-5.4-mini"
 },
 "14078": {
@@ -40694,7 +40694,7 @@
 "14080": {
 "level": "full",
 "plot": true,
-"hash": "3acd9cd2cf609f4d",
+"hash": "ce793b5f6d127611",
 "model": "gpt-5.4-mini"
 },
 "14081": {
@@ -40856,7 +40856,7 @@
 "14107": {
 "level": "full",
 "plot": true,
-"hash": "3d3eaddd0de0336b",
+"hash": "f2e255995e4af827",
 "model": "gpt-5.4-mini"
 },
 "14108": {
@@ -40904,7 +40904,7 @@
 "14115": {
 "level": "full",
 "plot": true,
-"hash": "ca579013418c5c21",
+"hash": "af5c92cd7e59e31b",
 "model": "gpt-5.4-mini"
 },
 "14116": {
@@ -40922,13 +40922,13 @@
 "14118": {
 "level": "full",
 "plot": true,
-"hash": "6bf640e7970f1967",
+"hash": "1aacb1b29a0758ed",
 "model": "gpt-5.4-mini"
 },
 "14119": {
 "level": "full",
 "plot": true,
-"hash": "08479ad944b4b1fd",
+"hash": "23c8e42a72af8bec",
 "model": "gpt-5.4-mini"
 },
 "14120": {
@@ -40970,7 +40970,7 @@
 "14126": {
 "level": "full",
 "plot": true,
-"hash": "c72aea943a53f7fa",
+"hash": "3620b06c1b2e8fa8",
 "model": "gpt-5.4-mini"
 },
 "14127": {
@@ -40988,7 +40988,7 @@
 "14129": {
 "level": "full",
 "plot": true,
-"hash": "3193de9a16623965",
+"hash": "a42f6c9e0da73a30",
 "model": "gpt-5.4-mini"
 },
 "14130": {
@@ -41048,7 +41048,7 @@
 "14139": {
 "level": "full",
 "plot": true,
-"hash": "e69a73cecc71b7e0",
+"hash": "d8d061c02470f2dc",
 "model": "gpt-5.4-mini"
 },
 "14140": {
@@ -41132,7 +41132,7 @@
 "14153": {
 "level": "full",
 "plot": true,
-"hash": "fe38c3fc7e340453",
+"hash": "bfb3f847946c77dd",
 "model": "gpt-5.4-mini"
 },
 "14154": {
@@ -41228,7 +41228,7 @@
 "14169": {
 "level": "full",
 "plot": true,
-"hash": "e9c41d4364fe8ca7",
+"hash": "76392631b8b69aa0",
 "model": "gpt-5.4-mini"
 },
 "14170": {
@@ -41456,7 +41456,7 @@
 "14207": {
 "level": "full",
 "plot": true,
-"hash": "23a7e247ad4aeab5",
+"hash": "337d1ef413a9a348",
 "model": "gpt-5.4-mini"
 },
 "14208": {
@@ -41474,7 +41474,7 @@
 "14210": {
 "level": "full",
 "plot": true,
-"hash": "72b528547557e814",
+"hash": "954037f7b2bfc2e2",
 "model": "gpt-5.4-mini"
 },
 "14211": {
@@ -41822,7 +41822,7 @@
 "14276": {
 "level": "full",
 "plot": true,
-"hash": "e380b1100c1a2e00",
+"hash": "bbf92f841a93d310",
 "model": "gpt-5.4-mini"
 },
 "14277": {
@@ -42188,7 +42188,7 @@
 "14341": {
 "level": "full",
 "plot": true,
-"hash": "e4c98ebe2b7c390c",
+"hash": "cf60643f093ab45a",
 "model": "gpt-5.4-mini"
 },
 "14342": {
@@ -42452,7 +42452,7 @@
 "14391": {
 "level": "full",
 "plot": true,
-"hash": "e51f137e3f42dfae",
+"hash": "91b1c60d2178ec75",
 "model": "gpt-5.4-mini"
 },
 "14392": {
@@ -42752,13 +42752,13 @@
 "14445": {
 "level": "full",
 "plot": true,
-"hash": "27574c8c6d8f5451",
+"hash": "bf5e933191079be6",
 "model": "gpt-5.4-mini"
 },
 "14446": {
 "level": "full",
 "plot": true,
-"hash": "28a9d0ef125f4ed2",
+"hash": "bbcda8f38dab577b",
 "model": "gpt-5.4-mini"
 },
 "14447": {
@@ -42794,7 +42794,7 @@
 "14452": {
 "level": "full",
 "plot": true,
-"hash": "06a4e35e90460952",
+"hash": "186cb817936a000c",
 "model": "gpt-5.4-mini"
 },
 "14453": {
@@ -42890,7 +42890,7 @@
 "14470": {
 "level": "full",
 "plot": true,
-"hash": "319967bd8c10d72e",
+"hash": "b536609c5025579b",
 "model": "gpt-5.4-mini"
 },
 "14471": {

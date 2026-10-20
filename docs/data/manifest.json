@@ -1,7 +1,7 @@
 {
- "built_at": "2026-10-20 10:08:35",
+ "built_at": "2026-10-20 11:40:15",
  "films": 14456,
- "chunks": 72281,
+ "chunks": 72768,
  "year_min": 1918,
  "year_max": 1991,
  "embedding_model": "text-embedding-3-large",
@@ -10,20 +10,20 @@
  "rerank_model": "gpt-5.5",
  "files": {
   "films": {
-   "file": "films.24b4ee1c59.json.gz",
-   "bytes": 6367311
+   "file": "films.d29f2ad1ff.json.gz",
+   "bytes": 6428723
   },
   "fts": {
-   "file": "fts.78c2ecc31d.json.gz",
-   "bytes": 3143576
+   "file": "fts.f3465a7e81.json.gz",
+   "bytes": 3174083
   },
   "lemmas": {
-   "file": "lemmas.0a8d919ddf.txt.gz",
-   "bytes": 2886087
+   "file": "lemmas.19b950cc3c.txt.gz",
+   "bytes": 2897455
   },
   "vectors": {
-   "file": "vectors.4cf3930a59.bin.gz",
-   "bytes": 29134977
+   "file": "vectors.2b5d232bf5.bin.gz",
+   "bytes": 29330457
   }
  }
 }
