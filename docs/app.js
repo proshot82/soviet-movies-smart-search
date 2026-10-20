@@ -15,6 +15,14 @@ function setKey(k) {
   memKey = k;
   try { k ? localStorage.setItem(KEY_STORAGE, k) : localStorage.removeItem(KEY_STORAGE); } catch { /* приватный режим */ }
 }
+// Ключ из закладки «…/#key=sk-…»: запоминается в этом браузере и сразу убирается из адреса (и из истории).
+// Часть адреса после # браузер на сервер не отправляет — ключ уходит только в api.openai.com.
+(function keyFromHash() {
+  const m = location.hash.match(/(?:^#|&)key=([^&]+)/);
+  if (!m) return;
+  setKey(decodeURIComponent(m[1]).trim());
+  history.replaceState(null, '', location.pathname + location.search);
+})();
 function renderKey() {
   const k = getKey();
   $('key-unset').hidden = !!k;
