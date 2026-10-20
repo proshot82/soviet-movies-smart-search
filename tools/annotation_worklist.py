@@ -321,7 +321,9 @@ def web_suggestions(films, classes, paths, taken, batches=(), skip_path=None):
                     rejected.append((r["film_id"], why))
                     continue
                 new = clean_annotation(r["annotation"])
-                if better(film, new, classes) or r["status"] == "full" and cached_level(classes, film) != "full":
+                # полный пересказ заменяет «неполную» аннотацию, но не более длинную (классификатор ошибается)
+                if better(film, new, classes) or (r["status"] == "full" and cached_level(classes, film) != "full"
+                                                  and len(new) >= len(film["annotation"] or "")):
                     srcs = [u for u in r.get("sources") or [] if str(u).startswith("http")]
                     out[r["film_id"]] = (new, "; ".join(srcs), "поиск в интернете"
                                          + ("" if r["status"] == "full" else " — без развязки"))
