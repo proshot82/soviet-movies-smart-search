@@ -53,7 +53,7 @@ MATCHES_PATH = ROOT / "imports" / "аннотации_сверка.json"     # �
 FLAG_MODEL = "gpt-5.4-mini"
 FLAG_EFFORT = "low"
 FLAG_BATCH = 25             # аннотаций в одном запросе
-FLAG_CLIP = 1500            # для решения «сюжет / не сюжет» хватает начала текста
+FLAG_CLIP = 1500            # сколько текста видит сверка «тот же фильм?»
 # Оценка стоимости: цены gpt-5.4-mini $0,75 / $4,50 за 1 млн входных / выходных токенов — по сводкам
 # цен на 19.10.2026, на странице OpenAI не проверены. ~2 символа на токен — по эмбеддингам этих
 # же аннотаций (2,28 млн символов чанков = 1,16 млн токенов); выходных ~30 на аннотацию — на пробе
@@ -62,26 +62,25 @@ PRICE_IN, PRICE_OUT = 0.75, 4.50
 CHARS_PER_TOKEN = 2.0
 PROMPT_TOKENS, ANSWER_TOKENS = 450, 30      # на запрос / на одну аннотацию в ответе
 
-FLAG_PROMPT = """Ниже аннотации советских фильмов, телефильмов и телеспектаклей. Для каждой определи, \
-рассказывает ли она СЮЖЕТ: из текста понятно, кто герои и что с ними происходит — есть хотя бы одно \
-событие или действие героев. Для концерта, документального или научно-популярного фильма вместо сюжета \
-годится конкретное содержание: кто участвует и что именно показано.
+FLAG_PROMPT = """Ниже аннотации советских фильмов, телефильмов, телеспектаклей и мультфильмов. Для каждой \
+определи, насколько полно она пересказывает СЮЖЕТ:
 
-"plot": false — если в тексте нет ни одного события, а есть только: литературная основа («По одноимённой \
-пьесе …»), жанр («военная драма», «водевиль»), общая тема («о любви к природе», «о быте чабанов»), время \
-и место действия, судьба и слава фильма, история съёмок, актёры, театр-постановщик, оценки.
-"plot": true — если есть хоть одно событие с героями, даже в одной фразе («у влюблённых сваты всё \
-перепутали»).
+"full" — сюжет рассказан до развязки: понятно, чем кончается история (как разрешился конфликт, что стало \
+с героями). Для концерта, документального или научно-популярного фильма — конкретно перечислено, что показано.
+"setup" — есть герои и завязка (хотя бы одно событие), но не сказано, чем всё кончается: анонс, обрыв на \
+«…и тут начинается…», «но однажды…».
+"none" — сюжета нет: только литературная основа («По одноимённой пьесе …»), жанр, общая тема («о любви к \
+природе»), время и место действия, судьба и слава фильма, актёры, театр, награды.
 
-Верни СТРОГО JSON-массив без пояснений: [{{"id": <номер>, "plot": true|false}}, ...] — по одному элементу \
-на каждую аннотацию.
+Верни СТРОГО JSON-массив без пояснений: [{{"id": <номер>, "level": "full"|"setup"|"none"}}, ...] — по одному \
+элементу на каждую аннотацию.
 
 {items}"""
 
 HEADERS = ["Приоритет", "Группа", "film_id", "Название", "Год", "Тип", "Студия", "Длина", "Обрыв",
-           "Не сюжет", "Текущая аннотация", "Текущий источник", "Поиск в Википедии",
+           "Полнота", "Текущая аннотация", "Текущий источник", "Поиск в Википедии",
            "Новая аннотация", "Источник новой аннотации", "Совпадение"]
-WIDTHS = [9, 12, 8, 36, 6, 15, 24, 7, 7, 9, 70, 30, 14, 70, 40, 30]
+WIDTHS = [9, 14, 8, 36, 6, 15, 24, 7, 7, 15, 70, 30, 14, 70, 40, 30]
 # Страны каталога ГФФ, при которых фильм может быть советским (остальные — зарубежные, не сопоставляются)
 SOVIET_COUNTRY = re.compile(r"ссср|cccр|россия|рсфср|украин|белорус|беларус|грузи|армени|азербайджан|казах|узбек|"
                             r"киргиз|кыргыз|таджик|туркмен|молдав|молдов|латви|литв|эстони", re.I)
@@ -118,6 +117,17 @@ def save_classes(classes):
     CLASSES_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=0), encoding="utf-8")
 
 
+LEVELS = ("full", "setup", "none")      # полный сюжет / только завязка / не сюжет
+LEVEL_NAMES = {"full": "полный сюжет", "setup": "только завязка", "none": "не сюжет"}
+
+
+def cached_level(classes, film):
+    """"full" / "setup" / "none" из кеша; None — не классифицирован, аннотация изменилась или запись старого
+    формата (только «сюжет / не сюжет», до 20.10.2026)."""
+    c = classes.get(film["film_id"])
+    return c.get("level") if c and c.get("hash") == ann_hash(film["annotation"]) else None
+
+
 def cached_plot(classes, film):
     """True / False из кеша, None — если фильм не классифицирован или аннотация с тех пор изменилась."""
     c = classes.get(film["film_id"])
@@ -125,11 +135,17 @@ def cached_plot(classes, film):
 
 
 def estimate(films):
-    chars = sum(min(len(f["annotation"] or ""), FLAG_CLIP) for f in films)
+    chars = sum(len(head_tail(f["annotation"])) for f in films)
     batches = -(-len(films) // FLAG_BATCH)
     t_in = chars / CHARS_PER_TOKEN + batches * PROMPT_TOKENS
     t_out = len(films) * ANSWER_TOKENS
     return t_in, t_out, (t_in * PRICE_IN + t_out * PRICE_OUT) / 1e6
+
+
+def head_tail(text, head=900, tail=600):
+    """Начало и конец длинного текста: развязка — в конце, модели её надо видеть."""
+    text = text or ""
+    return text if len(text) <= head + tail else text[:head] + " […] " + text[-tail:]
 
 
 def classify(films, classes):
@@ -138,8 +154,8 @@ def classify(films, classes):
     used_in = used_out = 0
     for start in range(0, len(films), FLAG_BATCH):
         batch = films[start:start + FLAG_BATCH]
-        items = "\n\n".join(f"[{f['film_id']}] «{f['title']}» ({f['year']}): "
-                            f"{(f['annotation'] or '')[:FLAG_CLIP]}" for f in batch)
+        items = "\n\n".join(f"[{f['film_id']}] «{f['title']}» ({f['year']}): {head_tail(f['annotation'])}"
+                            for f in batch)
         answer = None
         for attempt in range(3):
             try:
@@ -152,7 +168,7 @@ def classify(films, classes):
                 used_in += resp.usage.prompt_tokens
                 used_out += resp.usage.completion_tokens
                 text = resp.choices[0].message.content.strip().replace("```json", "").replace("```", "")
-                answer = {int(it["id"]): bool(it["plot"]) for it in json.loads(text)}
+                answer = {int(it["id"]): it["level"] for it in json.loads(text) if it.get("level") in LEVELS}
                 break
             except Exception as e:      # сбой сети или формата ответа — повтор
                 print(f"  запрос {start // FLAG_BATCH + 1}: {e}", file=sys.stderr)
@@ -161,8 +177,8 @@ def classify(films, classes):
             continue
         for f in batch:
             if f["film_id"] in answer:
-                classes[f["film_id"]] = {"plot": answer[f["film_id"]], "hash": ann_hash(f["annotation"]),
-                                         "model": FLAG_MODEL}
+                classes[f["film_id"]] = {"level": answer[f["film_id"]], "plot": answer[f["film_id"]] != "none",
+                                         "hash": ann_hash(f["annotation"]), "model": FLAG_MODEL}
         save_classes(classes)
         done = min(start + FLAG_BATCH, len(films))
         if done % 500 < FLAG_BATCH or done == len(films):
@@ -329,9 +345,9 @@ def verify_matches(films_by_id, suggest):
 def cmd_export(args):
     films = load_films(args.db)
     classes = load_classes()
-    todo = [f for f in films if f["annotation"] and cached_plot(classes, f) is None]
+    todo = [f for f in films if f["annotation"] and cached_level(classes, f) is None]
     t_in, t_out, cost = estimate(todo)
-    print(f"Фильмов film_id ≥ {FIRST_OPEN_ID}: {len(films)}; без классификации «сюжет / не сюжет»: {len(todo)}")
+    print(f"Фильмов film_id ≥ {FIRST_OPEN_ID}: {len(films)}; без оценки полноты сюжета: {len(todo)}")
     if todo:
         print(f"  классификация {FLAG_MODEL}: ≈ {t_in:,.0f} входных и {t_out:,.0f} выходных токенов, ≈ ${cost:.2f}")
     if args.estimate:
@@ -376,21 +392,22 @@ def cmd_export(args):
     for f in films:
         ann = f["annotation"] or ""
         plot = cached_plot(classes, f)
+        level = cached_level(classes, f)
         trunc = is_truncated(ann)
-        group = ("обрыв" if trunc else "не сюжет" if plot is False
+        group = ("обрыв" if trunc else "не сюжет" if plot is False else "только завязка" if level == "setup"
                  else "короткая" if len(ann) < SHORT_CHARS else "")
-        rank = (0 if trunc else 1 if plot is False else 2, len(ann), f["film_id"])
-        rows.append((rank, group, f, ann, trunc, plot))
+        rank = (0 if trunc else 1 if plot is False else 2 if level == "setup" else 3, len(ann), f["film_id"])
+        rows.append((rank, group, f, ann, trunc, level))
     rows.sort(key=lambda r: r[0])
 
     wb = openpyxl.Workbook()
     ws = wb.active
     ws.title = "Аннотации"
     ws.append(HEADERS)
-    for n, (_, group, f, ann, trunc, plot) in enumerate(rows, start=1):
+    for n, (_, group, f, ann, trunc, level) in enumerate(rows, start=1):
         query = urllib.parse.quote(f"{f['title']} {f['year'] or ''} фильм".strip())
         ws.append([n, group, f["film_id"], f["title"], f["year"], f["kind"], f["studio"], len(ann),
-                   "да" if trunc else "", "да" if plot is False else "" if plot else "?",
+                   "да" if trunc else "", LEVEL_NAMES.get(level, "?" if ann else ""),
                    ann, f["source"], f'=HYPERLINK("https://ru.wikipedia.org/w/index.php?search={query}","искать")',
                    *suggest.get(f["film_id"], (None, None, None))])
     wrap = Alignment(wrap_text=True, vertical="top")
