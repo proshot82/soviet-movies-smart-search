@@ -320,7 +320,8 @@ def main():
     table("Итог по профилям", [(profiles[pk][3], [r for r in rows if r['profile'] == pk]) for pk in profiles])
     for cls in ('famous', 'rare'):
         table(f"Класс: {'известные' if cls == 'famous' else 'редкие'}", [(profiles[pk][3], [r for r in rows if r['profile'] == pk and r['class'] == cls]) for pk in profiles])
-    STYLES = {'precise': 'точное описание', 'vague': 'расплывчатое', 'wrong': 'одна неверная деталь', 'noisy': 'форумное с шумом', 'formula': 'в аннотации только формула источника'}
+    STYLES = {'precise': 'точное описание', 'vague': 'расплывчатое', 'wrong': 'одна неверная деталь', 'noisy': 'форумное с шумом', 'formula': 'в аннотации только формула источника',
+              'childhood': 'детское воспоминание', 'scene': 'одна сцена', 'actor': 'по актёру', 'song': 'по песне или фразе'}
     for st, sname in STYLES.items():
         if any(r['style'] == st for r in rows):
             table(f"Стиль: {sname}", [(profiles[pk][3], [r for r in rows if r['profile'] == pk and r['style'] == st]) for pk in profiles])
