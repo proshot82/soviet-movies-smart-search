@@ -262,6 +262,30 @@ def wiki_suggestions(films, classes, path, taken):
     return out, skipped_series
 
 
+def web_suggestions(films, classes, paths, taken):
+    """{film_id: (текст, источники, примечание)} — пересказы, найденные поиском в интернете (JSON Lines:
+    film_id, found, complete, plot, sources, evidence). Тот же фильм проверял тот, кто искал (evidence), поэтому
+    модель-сверка их не перепроверяет. ГФФ и Википедия в приоритете (taken)."""
+    by_id = {f["film_id"]: f for f in films}
+    out = {}
+    for path in paths:
+        opener = gzip.open if str(path).endswith(".gz") else open
+        with opener(path, "rt", encoding="utf-8") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                r = json.loads(line)
+                film = by_id.get(r.get("film_id"))
+                if not film or not r.get("found") or not r.get("plot") or r["film_id"] in taken:
+                    continue
+                new = clean_annotation(r["plot"])
+                if better(film, new, classes):
+                    srcs = [u for u in r.get("sources") or [] if u]
+                    out[r["film_id"]] = (new, "; ".join(srcs) or "поиск в интернете",
+                                         "поиск в интернете" + ("" if r.get("complete") else " — без развязки"))
+    return out
+
+
 def gff_suggestions(films, classes, path):
     """{film_id: (текст, url, примечание)} — описания каталога gosfilmofond.ru, которые лучше текущей аннотации.
     Совпадение: то же название (целиком или без уточнения в скобках) и год ±1; при нескольких кандидатах
@@ -362,6 +386,10 @@ def cmd_export(args):
         print(f"Википедия: кандидатов {len(wiki)}; посерийных сюжетов сериалов со сквозным сюжетом "
               f"(не предлагаются): {skipped_series}")
         suggest.update(wiki)
+    if args.web:
+        web = web_suggestions(films, classes, args.web, set(suggest))
+        print(f"Поиск в интернете: кандидатов {len(web)}")
+        suggest.update(web)
     # аннотации с латинскими двойниками и «_x000D_» без другой замены — исправленный текст с прежним источником
     fixes = 0
     for f in films:
@@ -372,7 +400,7 @@ def cmd_export(args):
     if fixes:
         print(f"Исправлений латинских букв в русских словах: {fixes}")
     if suggest:
-        to_verify = {fid: v for fid, v in suggest.items() if not v[2].startswith("исправление")}
+        to_verify = {fid: v for fid, v in suggest.items() if not v[2].startswith(("исправление", "поиск в интернете"))}
         verdict = verify_matches({f["film_id"]: f for f in films}, to_verify) if to_verify else {}
         verdict.update({fid: "yes" for fid in suggest if fid not in to_verify})
         dropped = [fid for fid, v in verdict.items() if v == "no"]
@@ -383,7 +411,7 @@ def cmd_export(args):
         print(f"Сверка моделью: тот же фильм {sum(v == 'yes' for v in verdict.values())}, "
               f"не уверена {sum(v == 'unsure' for v in verdict.values())}, другой фильм {len(dropped)}")
     if suggest:
-        for src in ("ГФФ", "Википедия", "исправление"):
+        for src in ("ГФФ", "Википедия", "поиск в интернете", "исправление"):
             vals = [v for v in suggest.values() if v[0] and v[2].startswith(src)]
             print(f"Предложено: {src} — {len(vals)} (с пометкой «проверить»: "
                   f"{sum(1 for v in vals if 'проверить' in v[2])})")
@@ -544,6 +572,7 @@ def main():
     p.add_argument("--estimate", action="store_true", help="только оценить стоимость классификации")
     p.add_argument("--gff", help="каталог gosfilmofond.ru (imports/gff_site_catalog.jsonl.gz) — заполнить предложения")
     p.add_argument("--wiki", help="сюжеты Википедии (imports/wiki_plots.jsonl.gz) — где нет предложения ГФФ")
+    p.add_argument("--web", nargs="*", default=[], help="пересказы, найденные поиском в интернете (JSON Lines, .gz или нет)")
     p = sub.add_parser("apply", help="заполненный xlsx → JSON-правки для film_search.py import")
     p.add_argument("xlsx", nargs="+")
     p.add_argument("--out", required=True)
