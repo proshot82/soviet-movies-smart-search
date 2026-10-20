@@ -39300,1011 +39300,1213 @@
 "model": "gpt-5.4-mini"
 },
 "14204": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "8bcd317b0800a637",
 "model": "gpt-5.4-mini"
 },
 "14205": {
+"level": "none",
 "plot": false,
 "hash": "efc729bb35212254",
 "model": "gpt-5.4-mini"
 },
 "14206": {
+"level": "none",
 "plot": false,
 "hash": "d04f0a76f5a7b33a",
 "model": "gpt-5.4-mini"
 },
 "14207": {
+"level": "full",
 "plot": true,
 "hash": "23a7e247ad4aeab5",
 "model": "gpt-5.4-mini"
 },
 "14208": {
+"level": "none",
 "plot": false,
 "hash": "eb51442fd92a74f4",
 "model": "gpt-5.4-mini"
 },
 "14209": {
+"level": "none",
 "plot": false,
 "hash": "7ab4801c3ef05611",
 "model": "gpt-5.4-mini"
 },
 "14210": {
+"level": "full",
 "plot": true,
 "hash": "72b528547557e814",
 "model": "gpt-5.4-mini"
 },
 "14211": {
+"level": "none",
 "plot": false,
 "hash": "bde16136097e40d0",
 "model": "gpt-5.4-mini"
 },
 "14212": {
+"level": "none",
 "plot": false,
 "hash": "9c69bf02684dc141",
 "model": "gpt-5.4-mini"
 },
 "14213": {
+"level": "none",
 "plot": false,
 "hash": "8fb80858e6a49169",
 "model": "gpt-5.4-mini"
 },
 "14214": {
+"level": "none",
 "plot": false,
 "hash": "e14e0a0be7f88175",
 "model": "gpt-5.4-mini"
 },
 "14215": {
+"level": "none",
 "plot": false,
 "hash": "fc77398f9bc5cef6",
 "model": "gpt-5.4-mini"
 },
 "14216": {
+"level": "none",
 "plot": false,
 "hash": "bb31bcc639ad55b1",
 "model": "gpt-5.4-mini"
 },
 "14217": {
+"level": "full",
 "plot": true,
 "hash": "b3e455d62a70b6d3",
 "model": "gpt-5.4-mini"
 },
 "14224": {
+"level": "none",
 "plot": false,
 "hash": "50d44850e023695e",
 "model": "gpt-5.4-mini"
 },
 "14226": {
+"level": "none",
 "plot": false,
 "hash": "232d7df41ed6b5be",
 "model": "gpt-5.4-mini"
 },
 "14230": {
+"level": "none",
 "plot": false,
 "hash": "46783eb5172be20a",
 "model": "gpt-5.4-mini"
 },
 "14231": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "41e357ad3ed23746",
 "model": "gpt-5.4-mini"
 },
 "14233": {
+"level": "none",
 "plot": false,
 "hash": "e90983e472256d28",
 "model": "gpt-5.4-mini"
 },
 "14234": {
+"level": "none",
 "plot": false,
 "hash": "08cf592dfb750ce3",
 "model": "gpt-5.4-mini"
 },
 "14237": {
+"level": "none",
 "plot": false,
 "hash": "aa906a3bfe477734",
 "model": "gpt-5.4-mini"
 },
 "14238": {
+"level": "none",
 "plot": false,
 "hash": "2620fffb03959441",
 "model": "gpt-5.4-mini"
 },
 "14239": {
+"level": "none",
 "plot": false,
 "hash": "8d4256c2ed7655f8",
 "model": "gpt-5.4-mini"
 },
 "14241": {
+"level": "none",
 "plot": false,
 "hash": "aa3208a1d8e78440",
 "model": "gpt-5.4-mini"
 },
 "14243": {
+"level": "none",
 "plot": false,
 "hash": "70e48a0622169f22",
 "model": "gpt-5.4-mini"
 },
 "14244": {
+"level": "none",
 "plot": false,
 "hash": "2ef03713923ec694",
 "model": "gpt-5.4-mini"
 },
 "14245": {
+"level": "full",
 "plot": true,
 "hash": "009ea1930db13124",
 "model": "gpt-5.4-mini"
 },
 "14247": {
+"level": "none",
 "plot": false,
 "hash": "4cf26659038858b0",
 "model": "gpt-5.4-mini"
 },
 "14248": {
+"level": "none",
 "plot": false,
 "hash": "3f5af21ec98c9416",
 "model": "gpt-5.4-mini"
 },
 "14249": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "590004e8d4bca4c2",
 "model": "gpt-5.4-mini"
 },
 "14250": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "752de2e6bbe5cce5",
 "model": "gpt-5.4-mini"
 },
 "14251": {
+"level": "none",
 "plot": false,
 "hash": "2d1bc9ea27d33cf2",
 "model": "gpt-5.4-mini"
 },
 "14252": {
+"level": "full",
 "plot": true,
 "hash": "21cc0d4998626906",
 "model": "gpt-5.4-mini"
 },
 "14253": {
+"level": "none",
 "plot": false,
 "hash": "b497bc267c7f49a6",
 "model": "gpt-5.4-mini"
 },
 "14254": {
+"level": "none",
 "plot": false,
 "hash": "f1c6c1e22483d4cd",
 "model": "gpt-5.4-mini"
 },
 "14255": {
+"level": "none",
 "plot": false,
 "hash": "eab34d5cc6bb68e4",
 "model": "gpt-5.4-mini"
 },
 "14256": {
+"level": "none",
 "plot": false,
 "hash": "0e27c801d6942199",
 "model": "gpt-5.4-mini"
 },
 "14257": {
+"level": "none",
 "plot": false,
 "hash": "b2f752a1e3d2163c",
 "model": "gpt-5.4-mini"
 },
 "14259": {
+"level": "none",
 "plot": false,
 "hash": "01263d0f7e4c64c4",
 "model": "gpt-5.4-mini"
 },
 "14260": {
+"level": "none",
 "plot": false,
 "hash": "2d5de8b4bc262289",
 "model": "gpt-5.4-mini"
 },
 "14261": {
+"level": "none",
 "plot": false,
 "hash": "61f341f3724ac0a7",
 "model": "gpt-5.4-mini"
 },
 "14262": {
+"level": "none",
 "plot": false,
 "hash": "e05aea7a0b31e182",
 "model": "gpt-5.4-mini"
 },
 "14263": {
+"level": "none",
 "plot": false,
 "hash": "2ffa08419656600c",
 "model": "gpt-5.4-mini"
 },
 "14264": {
+"level": "none",
 "plot": false,
 "hash": "dc19e261fbe1a813",
 "model": "gpt-5.4-mini"
 },
 "14265": {
+"level": "none",
 "plot": false,
 "hash": "b9f791dac3049b41",
 "model": "gpt-5.4-mini"
 },
 "14267": {
+"level": "setup",
 "plot": true,
 "hash": "681db71073e0d23e",
 "model": "gpt-5.4-mini"
 },
 "14268": {
+"level": "none",
 "plot": false,
 "hash": "ecc7ba05e58008af",
 "model": "gpt-5.4-mini"
 },
 "14271": {
+"level": "none",
 "plot": false,
 "hash": "ecbade82461add43",
 "model": "gpt-5.4-mini"
 },
 "14272": {
+"level": "none",
 "plot": false,
 "hash": "b7d337ec8c11e47f",
 "model": "gpt-5.4-mini"
 },
 "14273": {
+"level": "none",
 "plot": false,
 "hash": "8046e7bd532bc96c",
 "model": "gpt-5.4-mini"
 },
 "14274": {
+"level": "none",
 "plot": false,
 "hash": "e20a726825e6c808",
 "model": "gpt-5.4-mini"
 },
 "14275": {
+"level": "none",
 "plot": false,
 "hash": "d14d27b5210b0594",
 "model": "gpt-5.4-mini"
 },
 "14276": {
+"level": "full",
 "plot": true,
 "hash": "e380b1100c1a2e00",
 "model": "gpt-5.4-mini"
 },
 "14277": {
+"level": "setup",
 "plot": true,
 "hash": "06b4a3ef220fe852",
 "model": "gpt-5.4-mini"
 },
 "14278": {
+"level": "none",
 "plot": false,
 "hash": "b4ea0a5e138f1f0e",
 "model": "gpt-5.4-mini"
 },
 "14279": {
+"level": "none",
 "plot": false,
 "hash": "b431545039a1153c",
 "model": "gpt-5.4-mini"
 },
 "14280": {
+"level": "none",
 "plot": false,
 "hash": "af67d2a2614fe13b",
 "model": "gpt-5.4-mini"
 },
 "14281": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "6e66bc515c494098",
 "model": "gpt-5.4-mini"
 },
 "14282": {
+"level": "setup",
 "plot": true,
 "hash": "13e4a8530e3853b2",
 "model": "gpt-5.4-mini"
 },
 "14284": {
+"level": "none",
 "plot": false,
 "hash": "38d80f7c782893d9",
 "model": "gpt-5.4-mini"
 },
 "14285": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "1596f77c67288c1c",
 "model": "gpt-5.4-mini"
 },
 "14286": {
+"level": "none",
 "plot": false,
 "hash": "3442885d0eac4213",
 "model": "gpt-5.4-mini"
 },
 "14287": {
+"level": "none",
 "plot": false,
 "hash": "260f8785845a67f6",
 "model": "gpt-5.4-mini"
 },
 "14288": {
+"level": "setup",
 "plot": true,
 "hash": "87fccfebd31380e9",
 "model": "gpt-5.4-mini"
 },
 "14289": {
+"level": "full",
 "plot": true,
 "hash": "b6f842066a5dc7ea",
 "model": "gpt-5.4-mini"
 },
 "14290": {
+"level": "full",
 "plot": true,
 "hash": "5ffea5f8acd6cf1a",
 "model": "gpt-5.4-mini"
 },
 "14291": {
+"level": "none",
 "plot": false,
 "hash": "eb4629cf2039beab",
 "model": "gpt-5.4-mini"
 },
 "14292": {
+"level": "none",
 "plot": false,
 "hash": "29e84534d2fa638d",
 "model": "gpt-5.4-mini"
 },
 "14293": {
+"level": "full",
 "plot": true,
 "hash": "016de33a6e17bb5a",
 "model": "gpt-5.4-mini"
 },
 "14294": {
+"level": "none",
 "plot": false,
 "hash": "ed8fa018487a96e9",
 "model": "gpt-5.4-mini"
 },
 "14298": {
+"level": "none",
 "plot": false,
 "hash": "2f22982731cdc14f",
 "model": "gpt-5.4-mini"
 },
 "14299": {
+"level": "full",
 "plot": true,
 "hash": "618a9bb3536824e4",
 "model": "gpt-5.4-mini"
 },
 "14300": {
+"level": "none",
 "plot": false,
 "hash": "c0de79add8f4d8de",
 "model": "gpt-5.4-mini"
 },
 "14301": {
+"level": "none",
 "plot": false,
 "hash": "b340e5c39de836bd",
 "model": "gpt-5.4-mini"
 },
 "14302": {
-"plot": false,
+"level": "setup",
+"plot": true,
 "hash": "9cc96af3331afe44",
 "model": "gpt-5.4-mini"
 },
 "14303": {
+"level": "none",
 "plot": false,
 "hash": "0ec9b6707aed31b2",
 "model": "gpt-5.4-mini"
 },
 "14305": {
+"level": "none",
 "plot": false,
 "hash": "ca6c81501d9ad2c8",
 "model": "gpt-5.4-mini"
 },
 "14306": {
+"level": "none",
 "plot": false,
 "hash": "bd6ddb4662f3cf12",
 "model": "gpt-5.4-mini"
 },
 "14308": {
+"level": "none",
 "plot": false,
 "hash": "4306c9451e68d4b4",
 "model": "gpt-5.4-mini"
 },
 "14309": {
+"level": "none",
 "plot": false,
 "hash": "b5f6a326e87e68c4",
 "model": "gpt-5.4-mini"
 },
 "14310": {
+"level": "none",
 "plot": false,
 "hash": "1ec114d469d5e03d",
 "model": "gpt-5.4-mini"
 },
 "14312": {
+"level": "full",
 "plot": true,
 "hash": "6eae0c5ebbdb0c78",
 "model": "gpt-5.4-mini"
 },
 "14313": {
+"level": "none",
 "plot": false,
 "hash": "90fbeb69cbfdcc4c",
 "model": "gpt-5.4-mini"
 },
 "14314": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "c937251184d8d254",
 "model": "gpt-5.4-mini"
 },
 "14315": {
+"level": "none",
 "plot": false,
 "hash": "24c905e906facbb8",
 "model": "gpt-5.4-mini"
 },
 "14316": {
+"level": "full",
 "plot": true,
 "hash": "96acd80842ea95b3",
 "model": "gpt-5.4-mini"
 },
 "14317": {
+"level": "none",
 "plot": false,
 "hash": "45c05caa3fc3a82c",
 "model": "gpt-5.4-mini"
 },
 "14318": {
+"level": "none",
 "plot": false,
 "hash": "d916931d28045b4d",
 "model": "gpt-5.4-mini"
 },
 "14320": {
+"level": "none",
 "plot": false,
 "hash": "7ac3456695f66076",
 "model": "gpt-5.4-mini"
 },
 "14321": {
+"level": "none",
 "plot": false,
 "hash": "f274a4e2804a8fa1",
 "model": "gpt-5.4-mini"
 },
 "14322": {
+"level": "none",
 "plot": false,
 "hash": "ddd4f517f9e9c79c",
 "model": "gpt-5.4-mini"
 },
 "14324": {
+"level": "setup",
 "plot": true,
 "hash": "cff2a32afcc4b15a",
 "model": "gpt-5.4-mini"
 },
 "14325": {
+"level": "none",
 "plot": false,
 "hash": "d6dd18a757d8ee4d",
 "model": "gpt-5.4-mini"
 },
 "14326": {
+"level": "none",
 "plot": false,
 "hash": "73b2ffda6fcb7612",
 "model": "gpt-5.4-mini"
 },
 "14327": {
+"level": "none",
 "plot": false,
 "hash": "8541e04f4321bffe",
 "model": "gpt-5.4-mini"
 },
 "14328": {
+"level": "full",
 "plot": true,
 "hash": "3d6cc625c19fada8",
 "model": "gpt-5.4-mini"
 },
 "14329": {
+"level": "setup",
 "plot": true,
 "hash": "f9a570601227a156",
 "model": "gpt-5.4-mini"
 },
 "14330": {
+"level": "setup",
 "plot": true,
 "hash": "a384139b4228e184",
 "model": "gpt-5.4-mini"
 },
 "14331": {
+"level": "none",
 "plot": false,
 "hash": "8c17654cb104aff0",
 "model": "gpt-5.4-mini"
 },
 "14334": {
+"level": "none",
 "plot": false,
 "hash": "f57d4c5033643ae9",
 "model": "gpt-5.4-mini"
 },
 "14335": {
+"level": "setup",
 "plot": true,
 "hash": "a2f6634f3416802f",
 "model": "gpt-5.4-mini"
 },
 "14336": {
+"level": "none",
 "plot": false,
 "hash": "e1bb5de06fa614d6",
 "model": "gpt-5.4-mini"
 },
 "14337": {
+"level": "none",
 "plot": false,
 "hash": "7c58f39dcdf7b647",
 "model": "gpt-5.4-mini"
 },
 "14341": {
+"level": "full",
 "plot": true,
 "hash": "e4c98ebe2b7c390c",
 "model": "gpt-5.4-mini"
 },
 "14342": {
-"plot": false,
+"level": "setup",
+"plot": true,
 "hash": "4212e030041b814f",
 "model": "gpt-5.4-mini"
 },
 "14343": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "68cec6be264d83c4",
 "model": "gpt-5.4-mini"
 },
 "14344": {
+"level": "full",
 "plot": true,
 "hash": "d7299c66b2076d5d",
 "model": "gpt-5.4-mini"
 },
 "14348": {
+"level": "setup",
 "plot": true,
 "hash": "2f77020cb1905ea1",
 "model": "gpt-5.4-mini"
 },
 "14351": {
+"level": "full",
 "plot": true,
 "hash": "f1e723f4fab4a4f1",
 "model": "gpt-5.4-mini"
 },
 "14356": {
+"level": "none",
 "plot": false,
 "hash": "deda9b6f633ca2fa",
 "model": "gpt-5.4-mini"
 },
 "14360": {
+"level": "setup",
 "plot": true,
 "hash": "c5c89cb534cece4e",
 "model": "gpt-5.4-mini"
 },
 "14361": {
+"level": "none",
 "plot": false,
 "hash": "190f509f7b1c6ad8",
 "model": "gpt-5.4-mini"
 },
 "14362": {
+"level": "none",
 "plot": false,
 "hash": "5625954eacd0f994",
 "model": "gpt-5.4-mini"
 },
 "14363": {
+"level": "none",
 "plot": false,
 "hash": "d80eb8d3ef251e88",
 "model": "gpt-5.4-mini"
 },
 "14365": {
+"level": "full",
 "plot": true,
 "hash": "1e733892ded1b0e7",
 "model": "gpt-5.4-mini"
 },
 "14366": {
+"level": "full",
 "plot": true,
 "hash": "6f81df760d41e3b6",
 "model": "gpt-5.4-mini"
 },
 "14367": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "47a7690003fc075e",
 "model": "gpt-5.4-mini"
 },
 "14369": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "07cc202a4415f978",
 "model": "gpt-5.4-mini"
 },
 "14370": {
+"level": "setup",
 "plot": true,
 "hash": "24f7881497ed132a",
 "model": "gpt-5.4-mini"
 },
 "14371": {
+"level": "none",
 "plot": false,
 "hash": "2fc927b5a0c002da",
 "model": "gpt-5.4-mini"
 },
 "14372": {
+"level": "full",
 "plot": true,
 "hash": "2f0d7cc85ff1c2d1",
 "model": "gpt-5.4-mini"
 },
 "14374": {
+"level": "none",
 "plot": false,
 "hash": "689accd5fff07834",
 "model": "gpt-5.4-mini"
 },
 "14375": {
+"level": "none",
 "plot": false,
 "hash": "77a3787b8ef797f6",
 "model": "gpt-5.4-mini"
 },
 "14376": {
+"level": "none",
 "plot": false,
 "hash": "14fd96fa679fa329",
 "model": "gpt-5.4-mini"
 },
 "14378": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "5a35f46b4b1c249a",
 "model": "gpt-5.4-mini"
 },
 "14384": {
+"level": "none",
 "plot": false,
 "hash": "6c69ab592625f0ae",
 "model": "gpt-5.4-mini"
 },
 "14388": {
+"level": "none",
 "plot": false,
 "hash": "c10de5c65d67d19f",
 "model": "gpt-5.4-mini"
 },
 "14389": {
+"level": "none",
 "plot": false,
 "hash": "110d55f880a5273a",
 "model": "gpt-5.4-mini"
 },
 "14390": {
+"level": "setup",
 "plot": true,
 "hash": "7c59acfad2b9d0c0",
 "model": "gpt-5.4-mini"
 },
 "14391": {
+"level": "full",
 "plot": true,
 "hash": "e51f137e3f42dfae",
 "model": "gpt-5.4-mini"
 },
 "14392": {
+"level": "setup",
 "plot": true,
 "hash": "9827ac28a58196f1",
 "model": "gpt-5.4-mini"
 },
 "14393": {
+"level": "full",
 "plot": true,
 "hash": "f040b95e94536949",
 "model": "gpt-5.4-mini"
 },
 "14394": {
+"level": "full",
 "plot": true,
 "hash": "27b3051b7a21e6e3",
 "model": "gpt-5.4-mini"
 },
 "14395": {
+"level": "none",
 "plot": false,
 "hash": "ce89781ab04393d3",
 "model": "gpt-5.4-mini"
 },
 "14396": {
+"level": "none",
 "plot": false,
 "hash": "a459de79dd3f7707",
 "model": "gpt-5.4-mini"
 },
 "14398": {
+"level": "none",
 "plot": false,
 "hash": "072f113390300bf9",
 "model": "gpt-5.4-mini"
 },
 "14399": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "6dc5c5b47f60f563",
 "model": "gpt-5.4-mini"
 },
 "14401": {
+"level": "none",
 "plot": false,
 "hash": "ad21a40c03896e8c",
 "model": "gpt-5.4-mini"
 },
 "14407": {
+"level": "none",
 "plot": false,
 "hash": "86f9f758ef4ab12e",
 "model": "gpt-5.4-mini"
 },
 "14408": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "c0e1fd4f9dab826c",
 "model": "gpt-5.4-mini"
 },
 "14409": {
+"level": "setup",
 "plot": true,
 "hash": "3ba80c36d726f2e8",
 "model": "gpt-5.4-mini"
 },
 "14410": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "e28e085c670fab24",
 "model": "gpt-5.4-mini"
 },
 "14411": {
+"level": "full",
 "plot": true,
 "hash": "323892c10e43d2a2",
 "model": "gpt-5.4-mini"
 },
 "14412": {
+"level": "full",
 "plot": true,
 "hash": "b7ca4abe725ee175",
 "model": "gpt-5.4-mini"
 },
 "14413": {
+"level": "setup",
 "plot": true,
 "hash": "692b91eccaed2cdf",
 "model": "gpt-5.4-mini"
 },
 "14414": {
+"level": "none",
 "plot": false,
 "hash": "f4c4b90298e78fe9",
 "model": "gpt-5.4-mini"
 },
 "14415": {
+"level": "none",
 "plot": false,
 "hash": "f35e7b19473eb37e",
 "model": "gpt-5.4-mini"
 },
 "14416": {
+"level": "none",
 "plot": false,
 "hash": "a8d7c5a24beb3ea6",
 "model": "gpt-5.4-mini"
 },
 "14417": {
+"level": "none",
 "plot": false,
 "hash": "1f6c9400f86c065e",
 "model": "gpt-5.4-mini"
 },
 "14420": {
+"level": "full",
 "plot": true,
 "hash": "4f8da2ae472e816c",
 "model": "gpt-5.4-mini"
 },
 "14421": {
+"level": "full",
 "plot": true,
 "hash": "16c82b0d8a3b059e",
 "model": "gpt-5.4-mini"
 },
 "14422": {
+"level": "setup",
 "plot": true,
 "hash": "8933e2088e2cbe79",
 "model": "gpt-5.4-mini"
 },
 "14423": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "5523ea605bd3ec91",
 "model": "gpt-5.4-mini"
 },
 "14424": {
+"level": "setup",
 "plot": true,
 "hash": "69b56fbad59c7e7e",
 "model": "gpt-5.4-mini"
 },
 "14425": {
+"level": "full",
 "plot": true,
 "hash": "fa7873c84d41fa8c",
 "model": "gpt-5.4-mini"
 },
 "14426": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "ec9d0c59d76ae5ad",
 "model": "gpt-5.4-mini"
 },
 "14427": {
+"level": "full",
 "plot": true,
 "hash": "de70c642a8f19f08",
 "model": "gpt-5.4-mini"
 },
 "14428": {
+"level": "none",
 "plot": false,
 "hash": "7d9563824e337b41",
 "model": "gpt-5.4-mini"
 },
 "14429": {
+"level": "none",
 "plot": false,
 "hash": "41e9c539e2f69bb7",
 "model": "gpt-5.4-mini"
 },
 "14430": {
+"level": "setup",
 "plot": true,
 "hash": "4aca31440249e6eb",
 "model": "gpt-5.4-mini"
 },
 "14431": {
+"level": "full",
 "plot": true,
 "hash": "df9262216adcf1bd",
 "model": "gpt-5.4-mini"
 },
 "14432": {
+"level": "full",
 "plot": true,
 "hash": "5c1029c46b8bbee6",
 "model": "gpt-5.4-mini"
 },
 "14433": {
+"level": "full",
 "plot": true,
 "hash": "9b9e8d921875b4d8",
 "model": "gpt-5.4-mini"
 },
 "14434": {
+"level": "setup",
 "plot": true,
 "hash": "700f417183e24a1e",
 "model": "gpt-5.4-mini"
 },
 "14435": {
+"level": "none",
 "plot": false,
 "hash": "d8ccc144fc013ef2",
 "model": "gpt-5.4-mini"
 },
 "14436": {
+"level": "none",
 "plot": false,
 "hash": "d8ccc144fc013ef2",
 "model": "gpt-5.4-mini"
 },
 "14437": {
+"level": "setup",
 "plot": true,
 "hash": "410fcd4a2d269f03",
 "model": "gpt-5.4-mini"
 },
 "14438": {
+"level": "full",
 "plot": true,
 "hash": "cdadf68c015ac08f",
 "model": "gpt-5.4-mini"
 },
 "14439": {
+"level": "full",
 "plot": true,
 "hash": "d7f7a9d0bbfa7ceb",
 "model": "gpt-5.4-mini"
 },
 "14440": {
+"level": "none",
 "plot": false,
 "hash": "d8ccc144fc013ef2",
 "model": "gpt-5.4-mini"
 },
 "14441": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "0294628bff153b17",
 "model": "gpt-5.4-mini"
 },
 "14442": {
+"level": "full",
 "plot": true,
 "hash": "ab2cd48ed1acf5e1",
 "model": "gpt-5.4-mini"
 },
 "14443": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "80dc0db1054d73c7",
 "model": "gpt-5.4-mini"
 },
 "14444": {
+"level": "none",
 "plot": false,
 "hash": "8ec1bcba9962d835",
 "model": "gpt-5.4-mini"
 },
 "14445": {
+"level": "full",
 "plot": true,
 "hash": "27574c8c6d8f5451",
 "model": "gpt-5.4-mini"
 },
 "14446": {
+"level": "full",
 "plot": true,
 "hash": "28a9d0ef125f4ed2",
 "model": "gpt-5.4-mini"
 },
 "14447": {
+"level": "setup",
 "plot": true,
 "hash": "3482ae940440d68f",
 "model": "gpt-5.4-mini"
 },
 "14448": {
+"level": "setup",
 "plot": true,
 "hash": "e0c15c0157a42e1e",
 "model": "gpt-5.4-mini"
 },
 "14449": {
+"level": "full",
 "plot": true,
 "hash": "b4f4e1abaf2b3b25",
 "model": "gpt-5.4-mini"
 },
 "14450": {
+"level": "none",
 "plot": false,
 "hash": "6a201deb2d4ddfec",
 "model": "gpt-5.4-mini"
 },
 "14451": {
+"level": "full",
 "plot": true,
 "hash": "b4359f92d7ca760b",
 "model": "gpt-5.4-mini"
 },
 "14452": {
+"level": "full",
 "plot": true,
 "hash": "06a4e35e90460952",
 "model": "gpt-5.4-mini"
 },
 "14453": {
+"level": "full",
 "plot": true,
 "hash": "fc2b3cd14f00f390",
 "model": "gpt-5.4-mini"
 },
 "14454": {
+"level": "none",
 "plot": false,
 "hash": "f8b83a9563a8d2af",
 "model": "gpt-5.4-mini"
 },
 "14455": {
+"level": "none",
 "plot": false,
 "hash": "102ec9c02eb92bbc",
 "model": "gpt-5.4-mini"
 },
 "14456": {
+"level": "none",
 "plot": false,
 "hash": "10270a7b4e8b4bd0",
 "model": "gpt-5.4-mini"
 },
 "14457": {
+"level": "none",
 "plot": false,
 "hash": "b875b40eb1630058",
 "model": "gpt-5.4-mini"
 },
 "14458": {
+"level": "none",
 "plot": false,
 "hash": "b875b40eb1630058",
 "model": "gpt-5.4-mini"
 },
 "14460": {
+"level": "none",
 "plot": false,
 "hash": "6ff0a07c681e4d17",
 "model": "gpt-5.4-mini"
 },
 "14461": {
+"level": "none",
 "plot": false,
 "hash": "47ec5e1f6a9e0c50",
 "model": "gpt-5.4-mini"
 },
 "14462": {
+"level": "none",
 "plot": false,
 "hash": "4bd66b8e5821d034",
 "model": "gpt-5.4-mini"
 },
 "14463": {
+"level": "none",
 "plot": false,
 "hash": "7c0a835a9a1b2238",
 "model": "gpt-5.4-mini"
 },
 "14464": {
+"level": "none",
 "plot": false,
 "hash": "0dd02be59aa8492d",
 "model": "gpt-5.4-mini"
 },
 "14465": {
-"plot": true,
+"level": "none",
+"plot": false,
 "hash": "24f1359f7b7ea0bb",
 "model": "gpt-5.4-mini"
 },
 "14466": {
+"level": "none",
 "plot": false,
 "hash": "e3d2d04030069092",
 "model": "gpt-5.4-mini"
 },
 "14468": {
+"level": "none",
 "plot": false,
 "hash": "63202882bec685fd",
 "model": "gpt-5.4-mini"
 },
 "14469": {
+"level": "none",
 "plot": false,
 "hash": "1273129eb7a5f69b",
 "model": "gpt-5.4-mini"
 },
 "14470": {
+"level": "full",
 "plot": true,
 "hash": "319967bd8c10d72e",
 "model": "gpt-5.4-mini"
 },
 "14471": {
+"level": "none",
 "plot": false,
 "hash": "4c052bb2b26c6c58",
 "model": "gpt-5.4-mini"
 },
 "14472": {
+"level": "full",
 "plot": true,
 "hash": "56bf4e2190062ef5",
 "model": "gpt-5.4-mini"
 },
 "14473": {
+"level": "none",
 "plot": false,
 "hash": "7d1421b356479b1e",
 "model": "gpt-5.4-mini"
 },
 "14477": {
+"level": "none",
 "plot": false,
 "hash": "61e076c69df5b357",
 "model": "gpt-5.4-mini"
