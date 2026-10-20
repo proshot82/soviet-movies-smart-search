@@ -285,6 +285,8 @@ def web_problem(film, rec):
     m = WEB_BAD.search(text)
     if m:
         return f"в тексте «{m.group(0)}»"
+    if rec.get("basis") == "play" and (film["kind"] != "фильм-спектакль" or "Сюжет пьесы:" not in text):
+        return "сюжет пьесы — только для телеспектакля и с пометкой «Сюжет пьесы:»"
     return None
 
 
@@ -327,6 +329,7 @@ def web_suggestions(films, classes, paths, taken, batches=(), skip_path=None):
                                                   and len(new) >= len(film["annotation"] or "")):
                     srcs = [u for u in r.get("sources") or [] if str(u).startswith("http")]
                     out[r["film_id"]] = (new, "; ".join(srcs), "поиск в интернете"
+                                         + (" — сюжет пьесы" if r.get("basis") == "play" else "")
                                          + ("" if r["status"] == "full" else " — без развязки"))
     if rejected:
         print(f"  пересказов из интернета отклонено проверками: {len(rejected)}")
