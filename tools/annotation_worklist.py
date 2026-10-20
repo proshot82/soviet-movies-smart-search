@@ -285,7 +285,7 @@ def web_problem(film, rec):
     m = WEB_BAD.search(text)
     if m:
         return f"в тексте «{m.group(0)}»"
-    if rec.get("basis") == "play" and (film["kind"] != "фильм-спектакль" or not re.search(r"Сюжет пьес[ы]?:", text)):
+    if rec.get("basis") == "play" and (film["kind"] != "фильм-спектакль" or not re.search(r"Сюжет пьес[ы]?[^:\n]{0,40}:", text)):
         return "сюжет пьесы — только для телеспектакля и с пометкой «Сюжет пьесы:»"
     return None
 
