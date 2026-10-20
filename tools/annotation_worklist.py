@@ -287,7 +287,7 @@ def web_problem(film, rec):
     return None
 
 
-def web_suggestions(films, classes, paths, taken, batches=()):
+def web_suggestions(films, classes, paths, taken, batches=(), skip_path=None):
     """{film_id: (текст, источники, примечание)} — пересказы, найденные агентами в интернете (JSON Lines:
     film_id, status full|partial|keep|not_found, annotation, sources, identity, note). Тождество фильма проверял
     агент (identity), модель-сверка их не перепроверяет. ГФФ и Википедия в приоритете (taken).
@@ -297,6 +297,7 @@ def web_suggestions(films, classes, paths, taken, batches=()):
     for b in batches:
         for f in json.loads(Path(b).read_text(encoding="utf-8")):
             seen_hash[f["film_id"]] = f.get("ann_hash")
+    skip = json.loads(Path(skip_path).read_text(encoding="utf-8")) if skip_path else {}   # {film_id: причина}
     out, rejected = {}, []
     for path in paths:
         opener = gzip.open if str(path).endswith(".gz") else open
@@ -310,6 +311,9 @@ def web_suggestions(films, classes, paths, taken, batches=()):
                              annotation=r.get("plot"))
                 film = by_id.get(r.get("film_id"))
                 if not film or r.get("status") not in ("full", "partial") or r["film_id"] in taken:
+                    continue
+                if str(r["film_id"]) in skip:
+                    rejected.append((r["film_id"], "исключён при проверке отчёта: " + skip[str(r["film_id"])]))
                     continue
                 r.setdefault("ann_hash", seen_hash.get(r["film_id"]))
                 why = web_problem(film, r)
@@ -429,7 +433,7 @@ def cmd_export(args):
               f"(не предлагаются): {skipped_series}")
         suggest.update(wiki)
     if args.web:
-        web = web_suggestions(films, classes, args.web, set(suggest), args.web_batches)
+        web = web_suggestions(films, classes, args.web, set(suggest), args.web_batches, args.web_skip)
         print(f"Поиск в интернете: кандидатов {len(web)}")
         suggest.update(web)
     # аннотации с латинскими двойниками и «_x000D_» без другой замены — исправленный текст с прежним источником
@@ -616,6 +620,7 @@ def main():
     p.add_argument("--wiki", help="сюжеты Википедии (imports/wiki_plots.jsonl.gz) — где нет предложения ГФФ")
     p.add_argument("--web", nargs="*", default=[], help="пересказы, найденные поиском в интернете (JSON Lines, .gz или нет)")
     p.add_argument("--web-batches", nargs="*", default=[], help="входные пакеты агентов (JSON) — для проверки хеша аннотации")
+    p.add_argument("--web-skip", help="JSON {film_id: причина} — пересказы, исключённые при ручной проверке отчётов агентов")
     p = sub.add_parser("apply", help="заполненный xlsx → JSON-правки для film_search.py import")
     p.add_argument("xlsx", nargs="+")
     p.add_argument("--out", required=True)
