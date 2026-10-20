@@ -441,7 +441,7 @@ def cmd_export(args):
     for f in films:
         if f["film_id"] not in suggest and f["annotation"] and fix_text(f["annotation"]) != f["annotation"]:
             suggest[f["film_id"]] = (clean_annotation(f["annotation"]), f["source"] or "—",
-                                     "исправление: латинские буквы в русских словах")
+                                     "исправление: латинские буквы в русских словах или хвост «Подробнее»")
             fixes += 1
     if fixes:
         print(f"Исправлений латинских букв в русских словах: {fixes}")
@@ -511,11 +511,14 @@ def cmd_export(args):
 # Латинские двойники кириллических букв (в каталогах встречается «капpизов» с латинской p — такое слово не
 # находится поиском по словам). I/i не трогаем: римские цифры («ХIII»).
 HOMOGLYPHS = str.maketrans("aceopxyACEHKMOPTXB", "асеорхуАСЕНКМОРТХВ")
+KT_TAIL = re.compile(r"\s*Подробнее на Кино-?Театр\.?РУ\s*(https?://\S+)?\s*$", re.I)
 
 
 def fix_text(text):
-    """Латинские двойники в словах с кириллицей → кириллица; артефакт Excel «_x000D_» → перевод строки."""
+    """Латинские двойники в словах с кириллицей → кириллица; артефакт Excel «_x000D_» → перевод строки;
+    хвост «Подробнее на Кино-Театр.РУ <ссылка>» убирается."""
     text = str(text or "").replace("_x000D_", "\n")
+    text = KT_TAIL.sub("", text)
     return re.sub(r"\w+", lambda m: m.group(0).translate(HOMOGLYPHS)
                   if re.search(r"[а-яё]", m.group(0), re.I) and re.search(r"[a-z]", m.group(0), re.I) else m.group(0),
                   text)
