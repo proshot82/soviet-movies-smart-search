@@ -9,7 +9,7 @@
 //   реранкер  — тот же промпт и разбор ответа, что у rerank()
 
 export const EMBEDDING_MODEL = 'text-embedding-3-large';
-export const RERANK_MODEL = 'gpt-5.5';
+export const RERANK_MODEL = 'gpt-5.6-terra';
 export const TOP_RESULTS = 5;
 export const RERANK_ANN_CHARS = 1500;
 const FTS_WEIGHT_RERANK = 0.3;

@@ -11,7 +11,7 @@
     python bench/bench_search.py --repeat 2             # повторы (реранкер недетерминирован)
 
 Профили = сочетания: расширение запроса (E) × FTS-гибрид (F) × реранкер (R: off/fast/thinking).
-Пайплайн — тот же, что у веб-интерфейса (/search в film_search.py); веса слияния берутся из film_search.fusion_weights().
+Пайплайн — тот же, что у сайта (docs/engine.js повторяет film_search.py); веса слияния берутся из film_search.fusion_weights().
 Расширение и эмбеддинги запроса считаются один раз на запрос и переиспользуются всеми профилями
 (иначе различия между профилями тонут в случайности LLM).
 
@@ -41,14 +41,19 @@ BENCH = Path(__file__).resolve().parent
 sys.path.insert(0, str(BENCH.parent))
 import film_search as fs  # noqa: E402
 
-# Цены за 1 млн токенов (USD): None — стоимость не считается, только токены. Эмбеддинг — как в film_search.py.
-# Для gpt-5.5 и gpt-5.4-nano цены не заданы: на странице цен OpenAI (проверено 04.09.2026) этих моделей уже нет —
-# впиши числа из своего биллинга, если нужна стоимость в отчёте.
-PRICES = {
-    fs.EMBEDDING_MODEL: {'in': 0.13, 'out': 0.0},
-    fs.QUERY_EXPAND_MODEL: {'in': None, 'out': None},
-    fs.RERANK_MODEL: {'in': None, 'out': None},
+# Цены за 1 млн токенов (USD), стандартный тариф — developers.openai.com/api/docs/pricing, проверено 20.10.2026.
+# Модели нет в списке — стоимость не считается, только токены.
+_KNOWN_PRICES = {
+    'text-embedding-3-large': {'in': 0.13, 'out': 0.0},
+    'gpt-5.6-sol': {'in': 4.0, 'out': 20.0},
+    'gpt-5.6-terra': {'in': 2.0, 'out': 12.0},
+    'gpt-5.6-luna': {'in': 0.20, 'out': 1.20},
+    'gpt-5.5': {'in': 5.0, 'out': 30.0},
+    'gpt-5.4-mini': {'in': 0.75, 'out': 4.50},
+    'gpt-5.4-nano': {'in': 0.20, 'out': 1.25},
 }
+PRICES = {m: _KNOWN_PRICES.get(m, {'in': None, 'out': None})
+          for m in (fs.EMBEDDING_MODEL, fs.QUERY_EXPAND_MODEL, fs.RERANK_MODEL)}
 PROFILES = {   # ключ: (expand, fts, rerank_mode, подпись)
     'default':   (False, True,  'fast',     'по умолчанию: F+R'),
     'expand':    (True,  True,  'fast',     'с расширением: E+F+R'),

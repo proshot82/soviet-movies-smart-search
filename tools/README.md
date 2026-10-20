@@ -9,7 +9,7 @@
 copy gosfilmofond.db gosfilmofond.backup.db                      # отмены импорта нет
 python tools/xlsx_to_json.py список.xlsx [ещё.xlsx …] --out imports/новые.json
 python film_search.py import imports/новые.json --dry-run         # отчёт, без записи
-python film_search.py import imports/новые.json                   # записать (serve.bat закрыт)
+python film_search.py import imports/новые.json                   # записать
 python film_search.py embed --resume                              # эмбеддинги новых фильмов — ТОЛЬКО с --resume
 python film_search.py stats                                       # эмбеддингов = чанков
 python pages/build_site.py                                        # данные сайта → docs/data

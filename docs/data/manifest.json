@@ -1,5 +1,5 @@
 {
- "built_at": "2026-10-20 19:46:20",
+ "built_at": "2026-10-20 22:30:11",
  "films": 14456,
  "chunks": 72731,
  "year_min": 1918,
@@ -7,7 +7,7 @@
  "embedding_model": "text-embedding-3-large",
  "dims": 1024,
  "quant": "int4",
- "rerank_model": "gpt-5.5",
+ "rerank_model": "gpt-5.6-terra",
  "files": {
   "films": {
    "file": "films.728a5ae106.json.gz",
