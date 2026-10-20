@@ -262,12 +262,42 @@ def wiki_suggestions(films, classes, path, taken):
     return out, skipped_series
 
 
-def web_suggestions(films, classes, paths, taken):
-    """{film_id: (текст, источники, примечание)} — пересказы, найденные поиском в интернете (JSON Lines:
-    film_id, found, complete, plot, sources, evidence). Тот же фильм проверял тот, кто искал (evidence), поэтому
-    модель-сверка их не перепроверяет. ГФФ и Википедия в приоритете (taken)."""
+# Пересказ из интернета не берётся, если в нём упоминаются источники или остался мусор страниц
+WEB_BAD = re.compile(r"подробнее\s*>>|в текущей аннотации|в карточке|по источникам|по данным источник|википеди|"
+                     r"imdb|likefilm|кино-театр\.ру|kino-teatr|кинопоиск|источник[и]? не (сообщают|раскрывают)|"
+                     r"не раскрывают|не сообщают|над[её]жн\w* (источник|описани|данн)", re.I)
+
+
+def web_problem(film, rec):
+    """Причина отказа для пересказа из интернета или None. Пакет помнит хеш аннотации, которую видел агент:
+    если аннотация в базе с тех пор изменилась, пересказ не применяется."""
+    text = rec.get("annotation") or ""
+    if rec.get("ann_hash") and rec["ann_hash"] != hashlib.sha1((film["annotation"] or "").encode()).hexdigest()[:16]:
+        return "аннотация в базе изменилась после выдачи пакета"
+    if not [u for u in rec.get("sources") or [] if str(u).startswith("http")]:
+        return "нет URL источника"
+    if len(text) < 80:
+        return "короче 80 знаков"
+    letters = [ch for ch in text if ch.isalpha()]
+    if not letters or sum("а" <= ch.lower() <= "я" or ch in "ёЁ" for ch in letters) / len(letters) < 0.5:
+        return "меньше половины кириллицы"
+    m = WEB_BAD.search(text)
+    if m:
+        return f"в тексте «{m.group(0)}»"
+    return None
+
+
+def web_suggestions(films, classes, paths, taken, batches=()):
+    """{film_id: (текст, источники, примечание)} — пересказы, найденные агентами в интернете (JSON Lines:
+    film_id, status full|partial|keep|not_found, annotation, sources, identity, note). Тождество фильма проверял
+    агент (identity), модель-сверка их не перепроверяет. ГФФ и Википедия в приоритете (taken).
+    batches — входные пакеты (JSON): из них берётся хеш аннотации, которую видел агент."""
     by_id = {f["film_id"]: f for f in films}
-    out = {}
+    seen_hash = {}
+    for b in batches:
+        for f in json.loads(Path(b).read_text(encoding="utf-8")):
+            seen_hash[f["film_id"]] = f.get("ann_hash")
+    out, rejected = {}, []
     for path in paths:
         opener = gzip.open if str(path).endswith(".gz") else open
         with opener(path, "rt", encoding="utf-8") as f:
@@ -275,14 +305,26 @@ def web_suggestions(films, classes, paths, taken):
                 if not line.strip():
                     continue
                 r = json.loads(line)
+                if "status" not in r:          # старый формат (found / plot)
+                    r = dict(r, status=("full" if r.get("complete") else "partial") if r.get("found") else "not_found",
+                             annotation=r.get("plot"))
                 film = by_id.get(r.get("film_id"))
-                if not film or not r.get("found") or not r.get("plot") or r["film_id"] in taken:
+                if not film or r.get("status") not in ("full", "partial") or r["film_id"] in taken:
                     continue
-                new = clean_annotation(r["plot"])
-                if better(film, new, classes):
-                    srcs = [u for u in r.get("sources") or [] if u]
-                    out[r["film_id"]] = (new, "; ".join(srcs) or "поиск в интернете",
-                                         "поиск в интернете" + ("" if r.get("complete") else " — без развязки"))
+                r.setdefault("ann_hash", seen_hash.get(r["film_id"]))
+                why = web_problem(film, r)
+                if why:
+                    rejected.append((r["film_id"], why))
+                    continue
+                new = clean_annotation(r["annotation"])
+                if better(film, new, classes) or r["status"] == "full" and cached_level(classes, film) != "full":
+                    srcs = [u for u in r.get("sources") or [] if str(u).startswith("http")]
+                    out[r["film_id"]] = (new, "; ".join(srcs), "поиск в интернете"
+                                         + ("" if r["status"] == "full" else " — без развязки"))
+    if rejected:
+        print(f"  пересказов из интернета отклонено проверками: {len(rejected)}")
+        for fid, why in rejected[:20]:
+            print(f"    {fid}: {why}")
     return out
 
 
@@ -387,7 +429,7 @@ def cmd_export(args):
               f"(не предлагаются): {skipped_series}")
         suggest.update(wiki)
     if args.web:
-        web = web_suggestions(films, classes, args.web, set(suggest))
+        web = web_suggestions(films, classes, args.web, set(suggest), args.web_batches)
         print(f"Поиск в интернете: кандидатов {len(web)}")
         suggest.update(web)
     # аннотации с латинскими двойниками и «_x000D_» без другой замены — исправленный текст с прежним источником
@@ -573,6 +615,7 @@ def main():
     p.add_argument("--gff", help="каталог gosfilmofond.ru (imports/gff_site_catalog.jsonl.gz) — заполнить предложения")
     p.add_argument("--wiki", help="сюжеты Википедии (imports/wiki_plots.jsonl.gz) — где нет предложения ГФФ")
     p.add_argument("--web", nargs="*", default=[], help="пересказы, найденные поиском в интернете (JSON Lines, .gz или нет)")
+    p.add_argument("--web-batches", nargs="*", default=[], help="входные пакеты агентов (JSON) — для проверки хеша аннотации")
     p = sub.add_parser("apply", help="заполненный xlsx → JSON-правки для film_search.py import")
     p.add_argument("xlsx", nargs="+")
     p.add_argument("--out", required=True)
