@@ -189,6 +189,7 @@ body{
   mask-image:linear-gradient(to bottom,#000 62%,transparent);}
 .toggle-ann{display:inline-block;margin:6px 0 0 34px;font-family:var(--fd);font-weight:500;
   text-transform:uppercase;letter-spacing:0.06em;font-size:0.72rem;color:var(--red);cursor:pointer;}
+.sources-note{margin:14px 0 0;font-size:0.84rem;color:var(--ink-dim);}.sources-note a,.result-src a{color:var(--ink-soft);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:3px;}.result-src{margin:4px 0 0 34px;font-size:0.82rem;color:var(--ink-dim);}
 .toggle-ann:hover{color:var(--red-deep);}
 
 /* ─── Ключ OpenAI ─── */
@@ -262,12 +263,13 @@ body{
   <section class="keybox" id="keybox">
     <div id="key-unset" hidden>
       <div class="key-h">Ключ OpenAI</div>
-      <p class="key-p">Без ключа ищется только по словам. С ключом — ещё и по смыслу, а модель перечитывает кандидатов и ставит пометки уверенности (как в локальной версии). Ключ сохраняется только в этом браузере и уходит только в api.openai.com; запрос стоит около 20 тыс. входных токенов <span class="mono" id="rerankModel">gpt-5.5</span>.</p>
+      <p class="key-p">Без ключа ищется только по словам. С ключом — ещё и по смыслу, а модель перечитывает кандидатов и ставит пометки уверенности. Ключ сохраняется только в этом браузере и уходит только в api.openai.com; запрос стоит около 20–30 тыс. входных токенов <span class="mono" id="rerankModel">gpt-5.6-terra</span> (≈4–6 центов).</p>
       <div class="key-row">
         <input type="password" id="key-input" class="key-input" placeholder="sk-…" autocomplete="off" spellcheck="false">
         <button id="key-save" class="key-btn">Сохранить</button>
       </div>
       <div class="key-msg" id="key-msg" aria-live="polite"></div>
+      <p class="key-p">Чтобы не вводить ключ на новом устройстве, открой закладку вида <span class="mono">адрес-сайта/#key=sk-…</span>: ключ запомнится в браузере и исчезнет из адресной строки. Сама закладка хранит ключ открытым текстом — не делись ею.</p>
     </div>
     <div id="key-set" class="key-line" hidden>
       Ключ OpenAI сохранён в этом браузере <span class="mono" id="key-mask"></span> ·
@@ -346,6 +348,7 @@ body{
   <div id="stages" class="stages"></div>
   <div id="notice" class="notice" hidden></div>
   <div id="results"></div>
+  <p class="sources-note">Аннотации — из каталогов Госфильмофонда, с сайтов <a href="https://gosfilmofond.ru/films/">gosfilmofond.ru</a>, <a href="https://animator.ru/">Аниматор.ру</a>, kino-teatr.ru и из Википедии (тексты Википедии — по лицензии <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.ru">CC BY-SA 4.0</a>). Ссылка на источник аннотации — у фильма.</p>
 
   <section class="box">
     <h3 class="box-h"><span class="bullet">&#9679;</span>Как искать: что писать в запросе</h3>

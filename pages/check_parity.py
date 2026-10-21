@@ -49,7 +49,7 @@ fs._cached_vecs, fs._cached_chunk_ids, fs._cached_chunk_to_film = vecs, list(ran
 fs._build_film_index(fs._cached_chunk_ids, chunk_to_film)
 
 # ── Запросы ──
-bench = json.loads((ROOT / "GFF_cowork/scripts/p4/bench/bench_set.json").read_text(encoding="utf-8"))
+bench = json.loads((ROOT / "bench/bench_set.json").read_text(encoding="utf-8"))
 queries = [b["query"] for b in bench]
 anns = [a for (a,) in conn.execute("SELECT annotation FROM films WHERE length(annotation) > 200")]
 for _ in range(300):   # случайные обрывки аннотаций: 2–7 слов, в разных формах
