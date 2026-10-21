@@ -11,7 +11,7 @@
 export const EMBEDDING_MODEL = 'text-embedding-3-large';
 export const RERANK_MODEL = 'gpt-5.6-terra';
 export const TOP_RESULTS = 5;
-export const RERANK_ANN_CHARS = 4000;
+export const RERANK_ANN_CHARS = 12000;
 const FTS_WEIGHT_RERANK = 0.3;
 const FTS_WEIGHT_NORERANK = 0.8;
 const RRF_K = 60;
