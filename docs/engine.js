@@ -9,9 +9,9 @@
 //   реранкер  — тот же промпт и разбор ответа, что у rerank()
 
 export const EMBEDDING_MODEL = 'text-embedding-3-large';
-export const RERANK_MODEL = 'gpt-5.5';
+export const RERANK_MODEL = 'gpt-5.6-terra';
 export const TOP_RESULTS = 5;
-export const RERANK_ANN_CHARS = 1500;
+export const RERANK_ANN_CHARS = 12000;
 const FTS_WEIGHT_RERANK = 0.3;
 const FTS_WEIGHT_NORERANK = 0.8;
 const RRF_K = 60;
@@ -83,7 +83,7 @@ export class Engine {
 
   film(idx) {
     const f = this.films[idx];
-    return { idx, film_id: f[0], title: f[1], genre: f[2], year: f[3], studio: f[4], director: f[5], annotation: f[6], kind: f[7] };
+    return { idx, film_id: f[0], title: f[1], genre: f[2], year: f[3], studio: f[4], director: f[5], annotation: f[6], kind: f[7], source: f[8] || '' };
   }
 
   // Фильтры как в fts_search/semantic_search: десятилетие, подстрока студии и жанра (без учёта регистра), тип
